@@ -1,5 +1,5 @@
 using System;
-namespace webapp_sub1.Models
+namespace mvc.Models
 {
     public class Product
     {
