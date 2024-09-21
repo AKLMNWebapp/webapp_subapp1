@@ -5,10 +5,12 @@ namespace webapp_sub1.Models
     {
         public int ProductId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public string? Nutrition { get; set; }
+        public double Energy { get; set; }
+        public double Fat { get; set; }
+        public double Carbohydrates { get; set; }
+        public double Protein { get; set; }
+        public string? Description { get; set; } //kan disable nullable i .csproj hvis vi ønsker 
         public string? ImageUrl { get; set; }
         //legger til user og category senere
-
     }
 }
