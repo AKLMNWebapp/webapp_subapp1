@@ -11,6 +11,9 @@ namespace mvc.Models
         public double Protein { get; set; }
         public string? Description { get; set; } //kan disable nullable i .csproj hvis vi ønsker 
         public string? ImageUrl { get; set; }
-        //legger til user og category senere
+        public int UserId { get; set; }
+        public User User { get; set; } = default!; //navigation property
+        public int CategoryId { get; set; }
+        public Category Category { get; set; } = default!; //navigation property
     }
 }
