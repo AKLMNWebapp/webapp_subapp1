@@ -25,7 +25,10 @@ public static class DBInit
         {
             var categories = new List<Category>
             {
-                new Category {Name = "Dairy"},
+                new Category {Name = "Dairy, Cheese, and Eggs"},
+                new Category {Name = "Vegan"},
+                new Category {Name = "Meat"},
+                new Category {Name = "Fruits and Vegetables"},
             };
             context.Categories.AddRange(categories);
             context.SaveChanges();
@@ -47,8 +50,69 @@ public static class DBInit
                     UserId = 1,
                     CategoryId = 1,
                 },
+
+                new Product
+                {
+                    Name = "Vegan",
+                    Energy = 3,
+                    Fat = 3,
+                    Carbohydrates = 2.3,
+                    Protein = 2,
+                    Description = "test",
+                    ImageUrl = "/imagea/milk.jpg",
+                    UserId = 1,
+                    CategoryId = 2,
+                },
+                new Product
+                {
+                    Name = "Apple",
+                    Energy = 3,
+                    Fat = 3,
+                    Carbohydrates = 2.3,
+                    Protein = 2,
+                    Description = "test",
+                    ImageUrl = "/imagea/milk.jpg",
+                    UserId = 1,
+                    CategoryId = 4,
+                },
             };
             context.AddRange(products);
+            context.SaveChanges();
+        }
+
+        if(!context.Reviews.Any())
+        {
+            var review = new List<Review>
+            {
+                new Review
+                {
+                    UserId = 1,
+                    ProductId = 1,
+                    Rating = 4.5m,
+                    Comment = "Amazing",
+                    CreatedAt = DateTime.UtcNow
+                },
+            };
+            context.AddRange(review);
+            context.SaveChanges();
+        }
+
+        if(!context.Collections.Any())
+        {
+            var collection = new List<Collection>
+            {
+                new Collection
+                {
+                    UserId = 1,
+                    ProductId = 1,
+                },
+                new Collection
+                {
+                    UserId = 1,
+                    ProductId = 2,
+                },
+            };
+            context.Collections.AddRange(collection);
             context.SaveChanges();
         }
     }
