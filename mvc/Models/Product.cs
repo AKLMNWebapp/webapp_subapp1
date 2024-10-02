@@ -15,5 +15,7 @@ namespace mvc.Models
         public User User { get; set; } = default!; //navigation property
         public int CategoryId { get; set; }
         public Category Category { get; set; } = default!; //navigation property
+
+        public ICollection<Review> Reviews {get; set;} = new List<Review>();
     }
 }
