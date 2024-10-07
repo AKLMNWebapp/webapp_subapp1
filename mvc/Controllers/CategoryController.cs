@@ -30,7 +30,7 @@ public class CategoryController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategort(Category category)
+    public async Task<IActionResult> CreateCategory(Category category)
     {
         if (ModelState.IsValid)
         {
