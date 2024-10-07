@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using mvc.ViewModels;
 using mvc.Models;
 
 namespace mvc.Controllers;
@@ -20,6 +21,24 @@ public class ProductController : Controller
         //return the view with list of products
         return View(products);
     }
+
+    [HttpGet]
+    public IActionResult CreateProduct() 
+    {
+        return View();
+    }
+
+    /*[HttpPost]
+    public async Task<IActionResult> CreateProduct()
+    {
+        var allergies = await _context.Allergies.ToListAsync();
+        var createProductViewModel = new CreateProductViewModel
+        {
+           product = new Product(),
+
+           AllergyMultiSelectList = 
+        }
+    }*/
     
     [HttpGet]
     //request the products table for a product with the specified ProductId, including related Reviews and Users

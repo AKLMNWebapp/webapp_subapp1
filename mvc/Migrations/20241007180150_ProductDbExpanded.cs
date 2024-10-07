@@ -5,7 +5,7 @@
 namespace mvc.Migrations
 {
     /// <inheritdoc />
-    public partial class AddReviewsToProduct : Migration
+    public partial class ProductDbExpanded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

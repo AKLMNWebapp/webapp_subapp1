@@ -12,10 +12,11 @@ namespace mvc.Models
         public string? Description { get; set; } //kan disable nullable i .csproj hvis vi ønsker 
         public string? ImageUrl { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; } = default!; //navigation property
+        public virtual User User { get; set; } = default!; //navigation property
         public int CategoryId { get; set; }
-        public Category Category { get; set; } = default!; //navigation property
+        public virtual Category Category { get; set; } = default!; //navigation property
+        public virtual ICollection<AllergyProduct> AllergyProducts {get; set;} = new List<AllergyProduct>(); // navigation property
 
-        public ICollection<Review> Reviews {get; set;} = new List<Review>();
+        public virtual ICollection<Review> Reviews {get; set;} = new List<Review>();
     }
 }

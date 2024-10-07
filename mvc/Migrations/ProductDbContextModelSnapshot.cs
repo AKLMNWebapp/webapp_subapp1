@@ -32,6 +32,27 @@ namespace mvc.Migrations
                     b.ToTable("Allergies");
                 });
 
+            modelBuilder.Entity("mvc.Models.AllergyProduct", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AllergyCode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AllergyCode");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("allergyProducts");
+                });
+
             modelBuilder.Entity("mvc.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -163,6 +184,23 @@ namespace mvc.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("mvc.Models.AllergyProduct", b =>
+                {
+                    b.HasOne("mvc.Models.Allergy", "Allergy")
+                        .WithMany("AllergyProducts")
+                        .HasForeignKey("AllergyCode")
+                        .IsRequired();
+
+                    b.HasOne("mvc.Models.Product", "Product")
+                        .WithMany("AllergyProducts")
+                        .HasForeignKey("ProductId")
+                        .IsRequired();
+
+                    b.Navigation("Allergy");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("mvc.Models.Collection", b =>
                 {
                     b.HasOne("mvc.Models.Product", "Product")
@@ -191,7 +229,7 @@ namespace mvc.Migrations
                         .IsRequired();
 
                     b.HasOne("mvc.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -220,9 +258,21 @@ namespace mvc.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("mvc.Models.Allergy", b =>
+                {
+                    b.Navigation("AllergyProducts");
+                });
+
             modelBuilder.Entity("mvc.Models.Product", b =>
                 {
+                    b.Navigation("AllergyProducts");
+
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("mvc.Models.User", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

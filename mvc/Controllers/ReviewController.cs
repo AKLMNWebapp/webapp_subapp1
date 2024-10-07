@@ -13,6 +13,28 @@ public class ReviewController : Controller
         _context = context;
     }
 
+    // Actions to create a review
+    [HttpGet]
+    public IActionResult CreateReview() 
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateReview(Review review)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Reviews.Add(review);
+            await _context.SaveChangesAsync();
+
+            int productId = review.ProductId;
+            return RedirectToAction("Details", "Product", new {id = productId});
+        }
+
+        return View(review);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
