@@ -16,4 +16,9 @@ public class ProductDbContext : DbContext
     public virtual DbSet<Review> Reviews { get; set; }
     public virtual DbSet<User> Users  {get; set; }
     public virtual DbSet<AllergyProduct> allergyProducts {get; set;}
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
+    }
 }

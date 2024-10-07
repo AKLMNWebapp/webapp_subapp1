@@ -40,6 +40,7 @@ public class ProductController : Controller
         }
     }*/
     
+    /*
     [HttpGet]
     //request the products table for a product with the specified ProductId, including related Reviews and Users
     public async Task<IActionResult> Details(int id)
@@ -56,6 +57,7 @@ public class ProductController : Controller
         }
         return View(product); //if product found, return view for the product
     }
+    */
 
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
