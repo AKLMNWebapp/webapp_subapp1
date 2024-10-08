@@ -35,6 +35,28 @@ public class ReviewController : Controller
         return View(review);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Update(int id)
+    {
+        var review = await _context.Reviews.FindAsync(id);
+        if (review == null) NotFound();
+        return View(review);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Update(Review review)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Reviews.Update(review);
+            await _context.SaveChangesAsync();
+
+            int productId = review.ProductId;
+            return RedirectToAction("Details", "Product", new {id = productId});
+        }
+        return View(review);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {

@@ -31,4 +31,24 @@ public class AllergyController : Controller
 
         return View(allergy);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Update(int id)
+    {
+        var allergy = await _context.Allergies.FindAsync(id);
+        if (allergy == null) NotFound();
+        return View(allergy);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Update(Allergy allergy)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Allergies.Update(allergy);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index", nameof(Index));
+        }
+        return View(allergy);
+    }
 }
