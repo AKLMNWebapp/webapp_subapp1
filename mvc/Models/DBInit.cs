@@ -103,13 +103,13 @@ public static class DBInit
             {
                 new Collection
                 {
-                    UserId = 1,
-                    ProductId = 1,
+                    /*UserId = 1,
+                    ProductId = 1,*/
                 },
                 new Collection
                 {
-                    UserId = 1,
-                    ProductId = 2,
+                    /*UserId = 1,
+                    ProductId = 2,*/
                 },
             };
             context.Collections.AddRange(collection);
