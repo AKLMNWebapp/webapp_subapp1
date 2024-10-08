@@ -5,7 +5,7 @@ namespace mvc.Models;
 
 public class AllergyProduct
 {
-    public int id {get; set;}
+    public int Id {get; set;}
     public int ProductId {get; set;}
     public int AllergyCode {get; set;}
     
