@@ -16,4 +16,3 @@ public class AllergyProduct
     [ForeignKey(nameof(ProductId))]
     [InverseProperty("AllergyProducts")]
     public virtual Product Product {get; set;} = default!;
-}

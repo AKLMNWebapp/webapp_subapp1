@@ -6,7 +6,9 @@ namespace mvc.ViewModels;
 
 public class CreateProductViewModel
 {
-    public CreateProductViewModel product {get; set;} = default!;
-    public List<MultiSelectList> AllergyMultiSelectList {get; set;} = default!;
-    public List<SelectListItem> ReviewSelectList {get; set;} = default!;
+    public Product Product {get; set;} = default!;
+    public List<SelectListItem> AllergyMultiSelectList {get; set;} = default!;
+    public List<int> SelectedAllergyCodes {get; set;} = new List<int>();
+    public String NewAllergyName {get; set;} = string.Empty;
+
 }

@@ -56,16 +56,4 @@ public class CategoryController : Controller
     }
 
    [HttpPost]
-   public async Task<IActionResult> DeleteConfirmation(int id)
-   {
-    //find category by id
-    var category = await _context.Categories.FindAsync(id);
-    if (category == null)
-    {
-        return NotFound(); //return 404 if category not found
-        }
-        _context.Categories.Remove(category); //remove category from db
-        await _context.SaveChangesAsync(); //save changes to db 
-        return RedirectToAction(nameof(Index)); //return view with updated list
-    }
-}
+   public async Task<IActionResult> DeleteConfirmation(int 

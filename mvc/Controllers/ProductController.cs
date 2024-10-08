@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mvc.ViewModels;
 using mvc.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Security.Claims;
 
 namespace mvc.Controllers;
 
@@ -22,25 +25,66 @@ public class ProductController : Controller
         return View(products);
     }
 
+    // This Get request populates the Allergy section with already existing allergies in the database
     [HttpGet]
-    public IActionResult CreateProduct() 
+    public async Task<IActionResult> CreateProduct() 
     {
-        return View();
-    }
+        var allergies = await _context.Allergies.ToListAsync(); // gets list of all available allergies
 
-    /*[HttpPost]
-    public async Task<IActionResult> CreateProduct()
-    {
-        var allergies = await _context.Allergies.ToListAsync();
+        // Our viewModel here is used to list all allergies in our select menu on the view
         var createProductViewModel = new CreateProductViewModel
         {
-           product = new Product(),
+            Product = new Product(),
+            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem {
+                Value = allergy.AllergyCode.ToString(),
+                Text = allergy.Name
+            }).ToList()
+        };
 
-           AllergyMultiSelectList = 
+        return View(createProductViewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
+    {
+        var product = model.Product;
+        if (ModelState.IsValid)
+        {
+
+            // This code ensures that the product can only be made by users, that are logged in
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userID))
+            {
+                return Forbid();
+            }
+
+            // This code handles user with self-made allergies that are not already pre existing in out database
+            product.UserId = int.Parse(userID); // parses id to string to use in if statement
+            if (!string.IsNullOrEmpty(model.NewAllergyName)) {
+                var newAllergy = new Allergy {Name = model.NewAllergyName}; // Creates a new allergy
+                _context.Allergies.Add(newAllergy);
+                await _context.SaveChangesAsync(); // Saves new allergy to database
+                model.SelectedAllergyCodes.Add(newAllergy.AllergyCode); // adds the new allergies codes to viewModel
+            }
+
+            // This loop iterates through all allergy codes that have been selected from the allergy menu
+            // The selected allergies will be saved as an AllergyProduct
+            foreach (var allergyCode in model.SelectedAllergyCodes)
+            {
+                product.AllergyProducts.Add(new AllergyProduct {
+                    AllergyCode = allergyCode,
+                    Product = product
+                });
+            }
+
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync(); // updated the db with new product
+            return RedirectToAction("Index"); // redirects to Index view.
         }
-    }*/
+        return View(product);
+    }
     
-    /*
+    
     [HttpGet]
     //request the products table for a product with the specified ProductId, including related Reviews and Users
     public async Task<IActionResult> Details(int id)
@@ -57,7 +101,6 @@ public class ProductController : Controller
         }
         return View(product); //if product found, return view for the product
     }
-    */
 
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
