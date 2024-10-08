@@ -17,4 +17,6 @@ namespace mvc.Models
         public virtual Category Category { get; set; } = default!; //navigation property
         public virtual ICollection<AllergyProduct> AllergyProducts {get; set;} = new List<AllergyProduct>(); // navigation property
 
-        public virtual ICollect
+        public virtual ICollection<Review> Reviews {get; set;} = new List<Review>();
+    }
+}
