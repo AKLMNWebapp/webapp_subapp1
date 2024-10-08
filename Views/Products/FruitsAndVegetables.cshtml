@@ -1,0 +1,33 @@
+@using webapp_sub1.Models
+@model List<webapp_sub1.Models.Subcategory>
+
+<!-- This binds the view to a list of subcategories -->
+<div class="fruits-vegetables-page">
+    <h1>Frukt og Grønnsaker</h1>
+
+    @foreach (var subcategory in Model) 
+    {
+        <div class="subcategory">
+            <h2 class="subcategory-heading">@subcategory.Name</h2> <!-- Display subcategory name (e.g., Citrus Fruits) -->
+            <div class="product-container">
+                @if (subcategory.Products != null && subcategory.Products.Any()) 
+                {
+                    @foreach (var product in subcategory.Products) 
+                    {
+                        <div class="product-card">
+                            <img src="@Url.Content($"/images/{product.ImageUrl}")" alt="@product.Name" class="product-image" />
+                            <div class="product-overlay">
+                                <h3>@product.Name</h3>
+                                <p>Beskrivelse av produktet kan komme her.</p> <!-- Replace with actual product description if available -->
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Ingen produkter tilgjengelig i denne underkategorien.</p> <!-- Message if no products available -->
+                }
+            </div>
+        </div>
+    }
+</div>
