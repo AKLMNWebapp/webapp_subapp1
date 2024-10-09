@@ -39,6 +39,61 @@ namespace webapp_sub1.Controllers
             return View(subcategories);  // Pass the subcategories to the view
         }
 
+        // Action method to display the "Vegan Products" category with subcategories
+        public IActionResult VeganProducts()
+        {
+            // Mock data for vegan subcategories and products
+            var subcategories = new List<Subcategory>
+            {
+                new Subcategory
+                {
+                    Name = "Plant-Based Milk Alternatives",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Almond Milk", ImageUrl = "almond_milk.jpg" },
+                        new Product { Name = "Soy Milk", ImageUrl = "soy_milk.jpg" },
+                        new Product { Name = "Oat Milk", ImageUrl = "oat_milk.jpg" },
+                        new Product { Name = "Coconut Milk", ImageUrl = "coconut_milk.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Vegan Cheese",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Cashew Cheese", ImageUrl = "cashew_cheese.jpg" },
+                        new Product { Name = "Soy Cheese", ImageUrl = "soy_cheese.jpg" },
+                        new Product { Name = "Almond Cheese", ImageUrl = "almond_cheese.jpg" },
+                        new Product { Name = "Coconut Cheese", ImageUrl = "coconut_cheese.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Meat Substitutes",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Tofu", ImageUrl = "tofu.jpg" },
+                        new Product { Name = "Tempeh", ImageUrl = "tempeh.jpg" },
+                        new Product { Name = "Seitan", ImageUrl = "seitan.jpg" },
+                        new Product { Name = "Lentil Burgers", ImageUrl = "lentil_burgers.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Vegan Snacks",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Vegan Chips", ImageUrl = "vegan_chips.jpg" },
+                        new Product { Name = "Fruit Snacks", ImageUrl = "fruit_snacks.jpg" },
+                        new Product { Name = "Nut Bars", ImageUrl = "nut_bars.jpg" },
+                        new Product { Name = "Veggie Sticks", ImageUrl = "veggie_sticks.jpg" }
+                    }
+                }
+            };
+
+            return View(subcategories); // Pass the subcategories to the view
+        }
+
         // Existing method: Handle category details for other categories
         public IActionResult CategoryDetails(string category)
         {

@@ -1,8 +1,8 @@
 @using webapp_sub1.Models
 @model List<webapp_sub1.Models.Subcategory>
 
-<div class="fruits-vegetables-page">
-    <h1>Frukt og Grønnsaker</h1>
+<div class="vegan-products-page">
+    <h1>Veganske Produkter</h1>
 
     @foreach (var subcategory in Model) 
     {
@@ -11,14 +11,13 @@
             <div class="product-container">
                 @if (subcategory.Products != null && subcategory.Products.Any()) 
                 {
-                    @foreach (var product in subcategory.Products) 
+                    foreach (var product in subcategory.Products) 
                     {
                         <div class="product-card">
                             <div class="product-image">
                                 <img src="@Url.Content($"/images/{product.ImageUrl}")" alt="@product.Name" />
                                 <div class="product-overlay">
-                                    <h3>@product.Name</h3>
-                                    <p>@product.Description</p> <!-- Display dynamic product description -->
+                                    <h3>@product.Name</h3> <!-- Only product name -->
                                 </div>
                             </div>
                         </div>

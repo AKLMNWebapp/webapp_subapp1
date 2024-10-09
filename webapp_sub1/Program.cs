@@ -20,8 +20,15 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+// Define the default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Add a specific route for vegan products
+app.MapControllerRoute(
+    name: "veganProducts",
+    pattern: "Products/VeganProducts",
+    defaults: new { controller = "Products", action = "VeganProducts" });
 
 app.Run();
