@@ -94,6 +94,68 @@ namespace webapp_sub1.Controllers
             return View(subcategories); // Pass the subcategories to the view
         }
 
+        // Action method to display the "Dairy, Cheese, and Eggs" category with subcategories
+        public IActionResult DairyCheeseEggs()
+        {
+            // Mock data for dairy subcategories and products
+            var subcategories = new List<Subcategory>
+            {
+                new Subcategory
+                {
+                    Name = "Milk",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Whole Milk", ImageUrl = "whole_milk.jpg" },
+                        new Product { Name = "Almond Milk", ImageUrl = "almond_milk.jpg" },
+                        new Product { Name = "Soy Milk", ImageUrl = "soy_milk.jpg" },
+                        new Product { Name = "Oat Milk", ImageUrl = "oat_milk.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Cheese",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Cheddar", ImageUrl = "cheddar.jpg" },
+                        new Product { Name = "Mozzarella", ImageUrl = "mozzarella.jpg" },
+                        new Product { Name = "Feta", ImageUrl = "feta.jpg" },
+                        new Product { Name = "Vegan Cheese", ImageUrl = "vegan_cheese.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Yogurt",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Greek Yogurt", ImageUrl = "greek_yogurt.jpg" },
+                        new Product { Name = "Flavored Yogurt", ImageUrl = "flavored_yogurt.jpg" },
+                        new Product { Name = "Dairy-Free Yogurt", ImageUrl = "dairy_free_yogurt.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Eggs",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Organic Eggs", ImageUrl = "organic_eggs.jpg" },
+                        new Product { Name = "Free-Range Eggs", ImageUrl = "free_range_eggs.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Cream",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Heavy Cream", ImageUrl = "heavy_cream.jpg" },
+                        new Product { Name = "Sour Cream", ImageUrl = "sour_cream.jpg" },
+                        new Product { Name = "Cream Cheese", ImageUrl = "cream_cheese.jpg" }
+                    }
+                }
+            };
+
+            return View(subcategories); // Pass the subcategories to the view
+        }
+
         // Existing method: Handle category details for other categories
         public IActionResult CategoryDetails(string category)
         {
