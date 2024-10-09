@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace webapp_sub1.Models
 {
     public class Subcategory
