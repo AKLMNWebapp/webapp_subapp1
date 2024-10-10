@@ -15,7 +15,7 @@ public class ProductDbContext : DbContext
     public virtual DbSet<Collection> Collections { get; set; }
     public virtual DbSet<Review> Reviews { get; set; }
     public virtual DbSet<User> Users  {get; set; }
-    public virtual DbSet<AllergyProduct> allergyProducts {get; set;}
+    public virtual DbSet<AllergyProduct> AllergyProducts {get; set;}
     public virtual DbSet<ProductCategory> ProductCategories {get; set;}
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

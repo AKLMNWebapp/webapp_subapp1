@@ -99,21 +99,20 @@ public static class DBInit
 
         if(!context.Collections.Any())
         {
-            var collection = new List<Collection>
+            var product1 = context.Products.Find(1);
+            var product2 = context.Products.Find(2);
+
+            if (product1 != null && product2 != null)
             {
-                new Collection
+                var collection = new Collection
                 {
-                    /*UserId = 1,
-                    ProductId = 1,*/
-                },
-                new Collection
-                {
-                    /*UserId = 1,
-                    ProductId = 2,*/
-                },
-            };
-            context.Collections.AddRange(collection);
-            context.SaveChanges();
+                    UserId = 1,
+                    Products = new List<Product> {product1, product2},
+                    CreatedAt = DateTime.Now
+                };
+                context.Collections.Add(collection);
+                context.SaveChanges();
+            }
         }
     }
 }
