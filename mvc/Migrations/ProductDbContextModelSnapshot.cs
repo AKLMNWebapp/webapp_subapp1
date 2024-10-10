@@ -29,7 +29,7 @@ namespace mvc.Migrations
 
                     b.HasKey("AllergyCode");
 
-                    b.ToTable("Allergies");
+                    b.ToTable("Allergies", (string)null);
                 });
 
             modelBuilder.Entity("mvc.Models.AllergyProduct", b =>
@@ -50,7 +50,7 @@ namespace mvc.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("allergyProducts");
+                    b.ToTable("allergyProducts", (string)null);
                 });
 
             modelBuilder.Entity("mvc.Models.Category", b =>
@@ -65,7 +65,7 @@ namespace mvc.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("mvc.Models.Collection", b =>
@@ -89,7 +89,7 @@ namespace mvc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Collections");
+                    b.ToTable("Collections", (string)null);
                 });
 
             modelBuilder.Entity("mvc.Models.Product", b =>
@@ -132,7 +132,7 @@ namespace mvc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("mvc.Models.Review", b =>
@@ -162,7 +162,7 @@ namespace mvc.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("mvc.Models.User", b =>
@@ -181,7 +181,7 @@ namespace mvc.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("mvc.Models.AllergyProduct", b =>

@@ -92,6 +92,14 @@ public static class DBInit
                     Comment = "Amazing",
                     CreatedAt = DateTime.UtcNow
                 },
+                new Review
+                {
+                    UserId = 1,
+                    ProductId = 1,
+                    Rating = 2.5m,
+                    Comment = "Hmmmmm",
+                    CreatedAt = DateTime.UtcNow
+                },
             };
             context.AddRange(review);
             context.SaveChanges();
@@ -99,20 +107,15 @@ public static class DBInit
 
         if(!context.Collections.Any())
         {
-            var product1 = context.Products.Find(1);
-            var product2 = context.Products.Find(2);
 
-            if (product1 != null && product2 != null)
+            var collection = new Collection
             {
-                var collection = new Collection
-                {
-                    UserId = 1,
-                    Products = new List<Product> {product1, product2},
-                    CreatedAt = DateTime.Now
-                };
-                context.Collections.Add(collection);
-                context.SaveChanges();
-            }
+                UserId = 1,
+                Products = new List<Product>(),
+                CreatedAt = DateTime.Now
+            };
+            context.Collections.AddRange(collection);
+            context.SaveChanges();
         }
     }
 }

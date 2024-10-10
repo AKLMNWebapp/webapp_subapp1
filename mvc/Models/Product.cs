@@ -16,7 +16,7 @@ namespace mvc.Models
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; } = default!; //navigation property
         public DateTime? CreatedAt {get; set;}
-        public virtual List<AllergyProduct> AllergyProducts {get; set;} = new List<AllergyProduct>(); // navigation property
+        public virtual List<AllergyProduct> AllergyProducts {get; set;} = default!; // navigation property
         public virtual List<Review> Reviews {get; set;} = default!;
     }
 }
