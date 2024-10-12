@@ -21,7 +21,18 @@ public class CategoryController : Controller
         return View(categories);
     }
 
-    //Details() vil komme her, slik at man kan se hvilke produkter som tilhører hver kategori, men db må oppdateres, så venter i tilfelle det er flere ting i db som må oppdateres :c 
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var category = await _context.Categories
+            .FirstOrDefaultAsync(c => c.CategoryId == id); 
+
+        if (category == null)
+        {
+            return NotFound();
+        }
+        return View(category); 
+    }
 
     [HttpGet]
     public IActionResult CreateCategory() 

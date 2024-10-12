@@ -18,8 +18,7 @@ public class CollectionController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var collections = await _context.Collections
-            .ToListAsync();
+        var collections = await _context.Collections.ToListAsync();
         return View(collections);
     }
 

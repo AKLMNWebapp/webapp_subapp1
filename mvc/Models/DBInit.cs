@@ -21,6 +21,19 @@ public static class DBInit
             context.SaveChanges();
         }
 
+        if(!context.Allergies.Any())
+        {
+            var allergies = new List<Allergy>
+            {
+                new Allergy { AllergyCode = 1, Name = "Peanut"},
+                new Allergy { AllergyCode = 2, Name = "Milk"},
+                new Allergy { AllergyCode = 3, Name = "Egg" },
+                new Allergy { AllergyCode = 4, Name = "Soy"},
+            };
+            context.Allergies.AddRangeAsync(allergies);
+            context.SaveChangesAsync();
+        }
+
         if(!context.Categories.Any())
         {
             var categories = new List<Category>
@@ -75,8 +88,31 @@ public static class DBInit
                     UserId = 1,
                     CategoryId = 4,
                 },
+                new Product
+                {
+                    Name = "Milk",
+                    Energy = 60,
+                    Fat = 6,
+                    Carbohydrates = 4.5,
+                    Protein = 8,
+                    Description = "this is milkkkkk",
+                    ImageUrl = "/images/milk.jpg",
+                    UserId = 1,
+                    CategoryId = 1,
+                }
             };
             context.AddRange(products);
+            context.SaveChanges();
+        }
+
+        if(!context.AllergyProducts.Any())
+        {
+            var allergyProducts = new List<AllergyProduct>
+            {
+                new AllergyProduct {AllergyCode = 3, ProductId = 1},
+                new AllergyProduct {AllergyCode = 2, ProductId = 4}
+            };
+            context.AllergyProducts.AddRange(allergyProducts);
             context.SaveChanges();
         }
 
