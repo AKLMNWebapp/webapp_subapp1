@@ -107,12 +107,22 @@ public static class DBInit
 
         if(!context.Collections.Any())
         {
-
-            var collection = new Collection
+            var collection = new List<Collection>
             {
+                new Collection
+                {
                 UserId = 1,
+                Name = "Vegan",
                 Products = new List<Product>(),
                 CreatedAt = DateTime.Now
+                },
+                new Collection
+                {
+                UserId = 1,
+                Name = "Meat",
+                Products = new List<Product>(),
+                CreatedAt = DateTime.Now
+                },
             };
             context.Collections.AddRange(collection);
             context.SaveChanges();

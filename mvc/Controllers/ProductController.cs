@@ -90,8 +90,8 @@ public class ProductController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var product = await _context.Products
-            .Include(p => p.Reviews) //includes the Reviews related to the product
-            .ThenInclude (r => r.User) //for each review, also include the user
+            //.Include(p => p.Reviews) //includes the Reviews related to the product
+            //.ThenInclude (r => r.User) //for each review, also include the user
             .FirstOrDefaultAsync(p => p.ProductId == id); //will be updated later when user authorization is set
 
         //check if the product was not, if not 404
