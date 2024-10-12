@@ -1,5 +1,5 @@
-
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using mvc.Models;
 
 namespace mvc.Controllers;
@@ -12,6 +12,13 @@ public class ReviewController : Controller
     {
         _context = context;
     }
+    
+    public async Task<IActionResult> Index()
+    {
+        var reviews = await _context.Reviews.ToListAsync();
+        return View(reviews);
+    }
+    
 
     // Actions to create a review
     [HttpGet]
