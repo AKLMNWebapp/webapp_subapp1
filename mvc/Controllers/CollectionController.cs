@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mvc.Models;
+using mvc.DAL;
 
 namespace mvc.Controllers;
 

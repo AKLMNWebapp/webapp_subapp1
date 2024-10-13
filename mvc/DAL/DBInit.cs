@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using mvc.Models;
 
-namespace mvc.Models;
+
+namespace mvc.DAL;
 
 public static class DBInit
 {
@@ -15,7 +17,27 @@ public static class DBInit
         {
             var users = new List<User>
             {
-                new User {Email = "test@gmail.com", Password = "test123"},
+                new User 
+                {
+                    UserId = 1,
+                    Email = "test1@gmail.com", 
+                    UserRole = Role.Admin, 
+                    Password = "test123",
+                },
+                new User 
+                {
+                    UserId = 2,
+                    Email = "test2@gmail.com", 
+                    UserRole = Role.Business, 
+                    Password = "test123",
+                },
+                new User 
+                {
+                    UserId = 3,
+                    Email = "test3@gmail.com", 
+                    UserRole = Role.User, 
+                    Password = "test123",
+                },
             };
             context.Users.AddRange(users);
             context.SaveChanges();

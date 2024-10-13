@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using mvc.DAL;
 using mvc.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
     options.UseSqlite(
         builder.Configuration["ConnectionStrings:ProductDbContextConnection"]);
 });
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

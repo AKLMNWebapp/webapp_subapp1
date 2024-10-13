@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using mvc.Models;
 
-namespace mvc.Models;
+namespace mvc.DAL;
 
 public class ProductDbContext : DbContext
 {
