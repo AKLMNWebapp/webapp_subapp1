@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore;
 using mvc.Models;
 
@@ -17,6 +18,23 @@ public class AllergyController : Controller
     {
         var allergies = await _context.Allergies.ToListAsync();
         return View(allergies);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+        var allergy = await _context.Allergies
+            .FirstOrDefaultAsync(a => a.AllergyCode == id);
+        
+        if (allergy == null)
+        {
+            return NotFound();
+        }
+        return View(allergy);
     }
 
     [HttpGet]
@@ -57,5 +75,30 @@ public class AllergyController : Controller
             return RedirectToAction("Index", nameof(Index));
         }
         return View(allergy);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete (int id)
+    {
+        var allergy = await _context.Allergies
+            .FirstOrDefaultAsync(a => a.AllergyCode == id);
+        
+        if (allergy == null)
+        {
+            return NotFound();
+        }
+        return View(allergy);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var allergy = await _context.Allergies.FindAsync(id);
+        if (allergy != null)
+        {
+            _context.Allergies.Remove(allergy);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction(nameof(Index));
     }
 }
