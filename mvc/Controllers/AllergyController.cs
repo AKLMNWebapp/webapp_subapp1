@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using mvc.Models;
 
 namespace mvc.Controllers;
@@ -12,7 +13,13 @@ public class AllergyController : Controller
         _context = context;
     }
 
-     [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var allergies = await _context.Allergies.ToListAsync();
+        return View(allergies);
+    }
+
+    [HttpGet]
     public IActionResult CreateAllergy() 
     {
         return View();
