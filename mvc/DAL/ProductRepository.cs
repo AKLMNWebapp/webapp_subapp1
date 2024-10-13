@@ -3,7 +3,7 @@ using mvc.Models;
 
 namespace mvc.DAL;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository : IRepository<Product>
 {
     private readonly ProductDbContext _db;
 
@@ -17,7 +17,7 @@ public class ProductRepository : IProductRepository
         return await _db.Products.ToListAsync();
     }
 
-    public async Task<Product?> GetProductById(int id)
+    public async Task<Product?> GetById(int id)
     {
         return await _db.Products.FindAsync(id);
     }

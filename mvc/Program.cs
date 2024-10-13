@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
         builder.Configuration["ConnectionStrings:ProductDbContextConnection"]);
 });
 
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IRepository, ProductRepository>();
 
 var app = builder.Build();
 

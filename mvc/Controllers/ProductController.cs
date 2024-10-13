@@ -11,9 +11,9 @@ namespace mvc.Controllers;
 
 public class ProductController : Controller
 {
-    private readonly IProductRepository _productRepository;
+    private readonly IRepository _productRepository;
 
-    public ProductController(IProductRepository productRepository)
+    public ProductController(IRepository productRepository)
     {
         _productRepository = productRepository; //initialize the db
     }
