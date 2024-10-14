@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using mvc.DAL;
 using mvc.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,14 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
         builder.Configuration["ConnectionStrings:ProductDbContextConnection"]);
 });
 
-builder.Services.AddScoped<IRepository, ProductRepository>();
+builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
+
+var loggerConfiguration = new LoggerConfiguration()
+    .MinimumLevel.Information() // Levels: Trace< Information < Warning < Error < Fatal
+    .WriteTo.File($"Logs/app_{DateTime.Now:yyyyMMdd:HHmmss}.log");
+
+var logger = loggerConfiguration.CreateLogger();
+builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
 
