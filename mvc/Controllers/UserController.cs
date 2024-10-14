@@ -30,7 +30,7 @@ public class UserController : Controller
     public async Task<IActionResult> Create(User user) {
         if(ModelState.IsValid) 
         {
-            _context.Add(user); // User is added to db
+            _context.Users.Add(user); // User is added to db
             await _context.SaveChangesAsync(); // changes are saved to db
             return RedirectToAction(nameof(Index)); // redirects to listing view with updated list
         }
@@ -55,7 +55,7 @@ public class UserController : Controller
     {
         if(ModelState.IsValid) 
         {
-            _context.Update(user); // User is updated from db
+            _context.Users.Update(user); // User is updated from db
             await _context.SaveChangesAsync(); // changes are saved to db
             return RedirectToAction(nameof(Index)); // redirects to list view with updated user
         }
