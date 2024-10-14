@@ -87,9 +87,19 @@ public class ProductController : Controller
                 });
             }
 
-            _productRepository.Products.Add(product);
+            _productRepository.Create(product);
             await _productRepository.SaveChangesAsync(); // updated the db with new product
             return RedirectToAction("Index"); // redirects to Index view.
+        }
+        return View(product);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Update(int id) {
+        var product = await _productRepository.GetProductById(id);
+        if (product == null)
+        {
+            return NotFound();
         }
         return View(product);
     }
@@ -127,7 +137,7 @@ public class ProductController : Controller
                 });
             }
 
-            _productRepository.Products.Update(product);
+            _productRepository.Update(product);
             await _productRepository.SaveChangesAsync(); // updated the db with new product
             return RedirectToAction("Index"); // redirects to Index view.
         }
