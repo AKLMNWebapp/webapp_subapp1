@@ -11,9 +11,9 @@ namespace mvc.Controllers;
 
 public class ProductController : Controller
 {
-    private readonly IRepository _productRepository;
+    private readonly IRepository<Product> _productRepository;
 
-    public ProductController(IRepository productRepository)
+    public ProductController(IRepository<Product> productRepository)
     {
         _productRepository = productRepository; //initialize the db
     }
@@ -39,7 +39,7 @@ public class ProductController : Controller
     [HttpGet]
     public async Task<IActionResult> CreateProduct() 
     {
-        var allergies = await _productRepository.GetAll(); // gets list of all available allergies
+        /*var allergies = await _productRepository.GetAll(); // gets list of all available allergies
 
         // Our viewModel here is used to list all allergies in our select menu on the view
         var createProductViewModel = new CreateProductViewModel
@@ -49,7 +49,7 @@ public class ProductController : Controller
                 Value = allergy.AllergyCode.ToString(),
                 Text = allergy.Name
             }).ToList()
-        };
+        };*/
 
         return View(createProductViewModel);
     }
@@ -62,7 +62,7 @@ public class ProductController : Controller
         {
 
             // This code ensures that the product can only be made by users, that are logged in
-            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+           /* var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userID))
             {
                 return Forbid();
@@ -89,7 +89,7 @@ public class ProductController : Controller
 
             _productRepository.Create(product);
             await _productRepository.SaveChangesAsync(); // updated the db with new product
-            return RedirectToAction("Index"); // redirects to Index view.
+            return RedirectToAction("Index"); // redirects to Index view. */
         }
         return View(product);
     }
@@ -112,7 +112,7 @@ public class ProductController : Controller
         {
 
             // This code ensures that the product can only be made by users, that are logged in
-            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+           /*var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userID))
             {
                 return Forbid();
@@ -139,7 +139,7 @@ public class ProductController : Controller
 
             _productRepository.Update(product);
             await _productRepository.SaveChangesAsync(); // updated the db with new product
-            return RedirectToAction("Index"); // redirects to Index view.
+            return RedirectToAction("Index"); // redirects to Index view. */
         }
         return View(product);
     }

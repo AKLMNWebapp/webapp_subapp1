@@ -53,38 +53,4 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> Update(User user)
     {
-        if(ModelState.IsValid) 
-        {
-            _context.Users.Update(user); // User is updated from db
-            await _context.SaveChangesAsync(); // changes are saved to db
-            return RedirectToAction(nameof(Index)); // redirects to list view with updated user
-        }
-        return View(user);
-    }
-
-    //confirmation view for deleting a specific user
-    [HttpGet]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var user = await _context.Users.FindAsync(id); //finds the user by id
-        if (user == null)
-        {
-            return NotFound(); //404 if not found
-        }
-        return View(user); //return confirmation view with user details
-    }
-
-    //deletes the specified user after confirmation
-    [HttpPost]
-    public async Task<IActionResult> DeleteConfirmation(int id)
-    {
-        var user = await _context.Users.FindAsync(id); //find the user by id
-        if (user == null)
-        {
-            return NotFound(); //404 if not found
-        }
-        _context.Users.Remove(user); //removes from db
-        await _context.SaveChangesAsync(); //saves changes to db
-        return RedirectToAction(nameof(Index)); //redirects with updated list
-    }
-}
+        if(
