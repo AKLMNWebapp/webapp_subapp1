@@ -28,13 +28,13 @@ public class ProductController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var product = await _productRepository.GetProductById(id);
+        var product = await _productRepository.GetById(id);
         if (product == null)
             return BadRequest("Product not found.");
         return View(product);
     }
 
-    
+    /*
     // This Get request populates the Allergy section with already existing allergies in the database
     [HttpGet]
     public async Task<IActionResult> CreateProduct() 
@@ -96,7 +96,7 @@ public class ProductController : Controller
 
     [HttpGet]
     public async Task<IActionResult> Update(int id) {
-        var product = await _productRepository.GetProductById(id);
+        var product = await _productRepository.GetById(id);
         if (product == null)
         {
             return NotFound();
@@ -143,9 +143,10 @@ public class ProductController : Controller
         }
         return View(product);
     }
+    */
     public async Task<IActionResult> Delete(int id)
     {
-        var product = await _productRepository.GetProductById(id);
+        var product = await _productRepository.GetById(id);
         if (product == null)
         {
             return NotFound();
