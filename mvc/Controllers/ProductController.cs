@@ -6,22 +6,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using mvc.DAL;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace mvc.Controllers;
 
 public class ProductController : Controller
 {
     private readonly IRepository<Product> _productRepository;
+    private readonly ILogger<ProductController> _logger;
 
-    public ProductController(IRepository<Product> productRepository)
+    public ProductController(IRepository<Product> productRepository, ILogger<ProductController> logger)
     {
         _productRepository = productRepository; //initialize the db
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
         //retrieve all products from db
-        var products = await _productRepository.GetAll(); 
+        var products = await _productRepository.GetAll();
+        if (products == null)
+        {
+            _logger.LogError("[ProductController] product list not found while executing _productRepository.GetAll()");
+            return NotFound("Product list not found");
+        }
         //return the view with list of products
         return View(products);
     }
@@ -30,7 +38,10 @@ public class ProductController : Controller
     {
         var product = await _productRepository.GetById(id);
         if (product == null)
-            return BadRequest("Product not found.");
+        {
+            _logger.LogError("[ProductController] product not found for ProductId {ProductId:0000}", id);
+            return BadRequest("Product not found for ProductId");
+        }
         return View(product);
     }
 
@@ -99,7 +110,8 @@ public class ProductController : Controller
         var product = await _productRepository.GetById(id);
         if (product == null)
         {
-            return NotFound();
+            _logger.LogError("[ProductController] product not found when updating the ProductId {ProductId:0000}", id);
+            return BadRequest("Product not found for the ProductId");
         }
         return View(product);
     }
@@ -148,14 +160,21 @@ public class ProductController : Controller
         var product = await _productRepository.GetById(id);
         if (product == null)
         {
-            return NotFound();
+            _logger.LogError("[ProductController] product not found for ProductId {ProductId:0000}", id);
+            return BadRequest("Product not found for the ProductId");
         }
         return View(product);
     }
 
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        await _productRepository.Delete(id);
+        bool returnOk = await _productRepository.Delete(id);
+        if (!returnOk)
+        {
+            _logger.LogError("[ProductController] product deletion failed for ProductId {ProductId:0000}", id);
+            return BadRequest("Product not found for the ProductId");
+
+        }
         return RedirectToAction(nameof(Index));
     }
 }
