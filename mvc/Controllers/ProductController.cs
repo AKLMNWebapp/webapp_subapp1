@@ -34,9 +34,9 @@ public class ProductController : Controller
         return View(product);
     }
 
-    /*
+
     // This Get request populates the Allergy section with already existing allergies in the database
-    [HttpGet]
+    /*[HttpGet]
     public async Task<IActionResult> CreateProduct() 
     {
         /*var allergies = await _productRepository.GetAll(); // gets list of all available allergies
@@ -49,10 +49,10 @@ public class ProductController : Controller
                 Value = allergy.AllergyCode.ToString(),
                 Text = allergy.Name
             }).ToList()
-        };*/
+        };
 
-        return View(createProductViewModel);
-    }
+        //return View(createProductViewModel);
+    } */
     
     [HttpPost]
     public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
@@ -143,7 +143,6 @@ public class ProductController : Controller
         }
         return View(product);
     }
-    */
     public async Task<IActionResult> Delete(int id)
     {
         var product = await _productRepository.GetById(id);
