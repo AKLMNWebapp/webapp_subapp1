@@ -15,6 +15,8 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
 });
 
 builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
+builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+
 
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Information() // Levels: Trace< Information < Warning < Error < Fatal

@@ -23,7 +23,7 @@ public class ProductRepository : IRepository<Product>
         catch (Exception e)
         {
             _logger.LogError("[ProductRepository] items ToListAsync() failed when GetAll(), error message: {e}", e.Message);
-            return null;
+            return new List<Product>();
         }
     }
 

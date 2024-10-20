@@ -7,29 +7,36 @@ namespace mvc.Controllers;
 
 public class CategoryController : Controller
 {
-    private readonly ProductDbContext _context;
+    private readonly IRepository<Category> _categoryRepository;
+    private readonly ILogger<CategoryController> _logger;
 
-    public CategoryController (ProductDbContext context)
+    public CategoryController (IRepository<Category> categoryRepository, ILogger<CategoryController> logger)
     {
-        _context = context;
+        _categoryRepository = categoryRepository;
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
         //retrieve all products from db
-        var categories = await _context.Categories.ToListAsync(); 
+        var categories = await _categoryRepository.GetAll(); 
         //return the view with list of products
+        if (categories == null)
+        {
+            _logger.LogError("[CategoryController] category list not found while executing GetAll()");
+            return NotFound("Category list not found");
+        }
         return View(categories);
     }
 
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
-        var category = await _context.Categories
-            .FirstOrDefaultAsync(c => c.CategoryId == id); 
+        var category = await _categoryRepository.GetById(id);
 
         if (category == null)
         {
+            _logger.LogError("[CategoryController] Category not found for CategoryId {CategoryId:0000}",id);
             return NotFound();
         }
         return View(category); 
@@ -46,11 +53,11 @@ public class CategoryController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            bool returnOk = await _categoryRepository.Create(category);
+            if (returnOk)
+                return RedirectToAction(nameof(Index));       
         }
-
+        _logger.LogError("[CategoryController] category creation failed {@category}", category);
         return View(category);
     }
 
@@ -59,9 +66,10 @@ public class CategoryController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         //find category by id
-        var category = await _context.Categories.FindAsync(id);
+        var category = await _categoryRepository.GetById(id);
         if (category == null)
         {
+            _logger.LogError("[CategoryController] Category not found for CategoryId {CategoryId:0000}", id);
             return NotFound(); //return 404 if category not found
         }
         return View(category); //return delete confirmation view
@@ -71,13 +79,12 @@ public class CategoryController : Controller
    public async Task<IActionResult> DeleteConfirmation(int id)
    {
     //find category by id
-    var category = await _context.Categories.FindAsync(id);
-    if (category == null)
+    bool returnOk = await _categoryRepository.Delete(id);
+    if (!returnOk)
     {
-        return NotFound(); //return 404 if category not found
+        _logger.LogError("[CategoryController] category deletion failed for CategoryId {CategoryId:0000}",id);
+        return BadRequest("Category not found for the CategoryId"); //return 404 if category not found
         }
-        _context.Categories.Remove(category); //remove category from db
-        await _context.SaveChangesAsync(); //save changes to db 
         return RedirectToAction(nameof(Index)); //return view with updated list
     }
 }
