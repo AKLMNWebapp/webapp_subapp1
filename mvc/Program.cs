@@ -16,6 +16,7 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
 
 builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+builder.Services.AddScoped<IRepository<Collection>, CollectionRepository>();
 
 
 var loggerConfiguration = new LoggerConfiguration()
