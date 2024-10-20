@@ -7,16 +7,23 @@ namespace mvc.Controllers;
 
 public class ReviewController : Controller
 {
-    private readonly ProductDbContext _context;
+    private readonly IRepository<Review> _reviewRepository;
+    private readonly ILogger<ReviewController> _logger;
 
-    public ReviewController (ProductDbContext context)
+    public ReviewController (IRepository<Review> reviewRepository, ILogger<ReviewController> logger)
     {
-        _context = context;
+        _reviewRepository = reviewRepository;
+        _logger = logger;
     }
     
     public async Task<IActionResult> Index()
     {
-        var reviews = await _context.Reviews.ToListAsync();
+        var reviews = await _reviewRepository.GetAll();
+        if (reviews == null)
+        {
+            _logger.LogError("[ReviewController] review lsit not found while executing GetAll()");
+            return NotFound();
+        }
         return View(reviews);
     }
     
@@ -33,20 +40,25 @@ public class ReviewController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            int productId = review.ProductId;
-            return RedirectToAction("Details", "Product", new {id = productId});
+            bool returnOk = await _reviewRepository.Create(review);
+            if(returnOk)
+            {
+                int productId = review.ProductId;
+                _logger.LogInformation("[ReviewController] Review created successfully for ProductId {ProductId:0000}", review.ProductId);
+                return RedirectToAction("Details", "Product", new {id = productId});
+            }
+            else
+            {
+                _logger.LogError("[ReviewController] Failed to create review for ProductId {ProductId:0000}", review.ProductId);
+            }     
         }
-
         return View(review);
     }
 
     [HttpGet]
     public async Task<IActionResult> Update(int id)
     {
-        var review = await _context.Reviews.FindAsync(id);
+        var review = await _reviewRepository.GetById(id);
         if (review == null) NotFound();
         return View(review);
     }
@@ -56,11 +68,17 @@ public class ReviewController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.Reviews.Update(review);
-            await _context.SaveChangesAsync();
-
-            int productId = review.ProductId;
-            return RedirectToAction("Details", "Product", new {id = productId});
+            var returnOk = await _reviewRepository.Update(review);
+            if (returnOk)
+            {
+                int productId = review.ProductId;
+                _logger.LogInformation("[ReviewController] Successfully updated review with ReviewId {ReviewId}", review.ReviewId);
+                return RedirectToAction("Details", "Product", new {id = productId});
+            }
+            else
+            {
+                _logger.LogError("[ReviewController] failed to update review with ReviewId {ReviewId}", review.ReviewId);
+            }
         }
         return View(review);
     }
@@ -68,10 +86,11 @@ public class ReviewController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-        var review = await _context.Reviews.FindAsync(id);
+        var review = await _reviewRepository.GetById(id);
         if (review == null)
         {
-            return NotFound();
+            _logger.LogError("[ReviewController] review not found for ReviewId {ReviewId:0000}", id);
+            return BadRequest("Review not found for the ReviewId");
         }
         return View(review);
     }
@@ -79,16 +98,19 @@ public class ReviewController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var review = await _context.Reviews.FindAsync(id);
-        if (review == null)
+        var review = await _reviewRepository.GetById(id);
+        if (review == null) return NotFound();
+
+        var success = await _reviewRepository.Delete(id);
+        if (success)
         {
-            return NotFound();
+            _logger.LogInformation("[ReviewController] Successfully deleted review with ReviewId {ReviewId}", id);
+            return RedirectToAction("Details", "Product", new { id = review.ProductId });
         }
-
-        int productId = review.ProductId; //get ProductId associated with the review, for redirect after deletion.
-
-        _context.Reviews.Remove(review); //removes the review from the db
-        await _context.SaveChangesAsync(); //coomits changes to db
-        return RedirectToAction("Details", "Product", new {id = productId}); //redirects to the Details page (spørs hva vi gjør) for the product associated with the deleted review.
+        else
+        {
+            _logger.LogError("[ReviewController] Failed to delete review with ReviewId {ReviewId}", id);
+            return View(review);
+        }
     }
 }
