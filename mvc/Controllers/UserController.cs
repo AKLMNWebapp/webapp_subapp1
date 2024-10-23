@@ -7,16 +7,23 @@ namespace mvc.Controllers;
 
 public class UserController : Controller
 {
-    private readonly ProductDbContext _context;
+    private readonly IRepository<User> _userRepository;
+    private readonly ILogger<UserController> _logger;
 
-    public UserController(ProductDbContext context)
+    public UserController(IRepository<User> userRepository, ILogger<UserController> logger)
     {
-        _context = context;
+        _userRepository = userRepository;
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
-        var users = await _context.Users.ToListAsync(); //retrieve users from db
+        var users = await _userRepository.GetAll(); //retrieve users from db
+        if (users == null)
+        {
+            _logger.LogError("[UserController] user list not found while executing GetAll()");
+            return NotFound("User list not found");
+        }
         return View(users); //returns view with list of users
     }
 
@@ -27,13 +34,17 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(User user) {
+    public async Task<IActionResult> Create(User user) 
+    {
         if(ModelState.IsValid) 
         {
-            _context.Users.Add(user); // User is added to db
-            await _context.SaveChangesAsync(); // changes are saved to db
-            return RedirectToAction(nameof(Index)); // redirects to listing view with updated list
+            bool returnOk = await _userRepository.Create(user); // User is added to db
+            if (returnOk)
+            {
+                return RedirectToAction(nameof(Index)); // redirects to listing view with updated list
+            }           
         }
+        _logger.LogError("[UserController] user creation failed {@user}", user); 
         return View(user);
     }
 
@@ -41,11 +52,8 @@ public class UserController : Controller
     [HttpGet]
     public async Task<IActionResult> Update(int id)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
+        var user = await _userRepository.GetById(id);
+        if (user == null) NotFound();
         return View(user);
     }
 
@@ -55,9 +63,17 @@ public class UserController : Controller
     {
         if(ModelState.IsValid) 
         {
-            _context.Users.Update(user); // User is updated from db
-            await _context.SaveChangesAsync(); // changes are saved to db
-            return RedirectToAction(nameof(Index)); // redirects to list view with updated user
+            var returnOk = await _userRepository.Update(user);
+            if (returnOk)
+            {
+                _logger.LogInformation("[UserController] Successfully updated user with UserId {UserId:0000}", user);
+                return RedirectToAction(nameof(Index)); // redirects to list view with updated user
+
+            }
+            else
+            {
+                _logger.LogError("[UserController] failed to update user with UserId {UserId:0000}", user);
+            }
         }
         return View(user);
     }
@@ -66,9 +82,10 @@ public class UserController : Controller
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _context.Users.FindAsync(id); //finds the user by id
+        var user = await _userRepository.GetById(id); //finds the user by id
         if (user == null)
         {
+            _logger.LogError("[UserController] User not found for UserId {UserId:0000}", id);
             return NotFound(); //404 if not found
         }
         return View(user); //return confirmation view with user details
@@ -78,13 +95,14 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteConfirmation(int id)
     {
-        var user = await _context.Users.FindAsync(id); //find the user by id
-        if (user == null)
+        bool returnOk = await _userRepository.Delete(id); //find the user by id
+        if (!returnOk)
         {
-            return NotFound(); //404 if not found
+            _logger.LogError("[UserController] user deletion failed for UserId {UserId:0000}",id);
+            return BadRequest("User not found for the UserId"); //404 if not found
         }
-        _context.Users.Remove(user); //removes from db
-        await _context.SaveChangesAsync(); //saves changes to db
+        //_context.Users.Remove(user); //removes from db
+        //await _context.SaveChangesAsync(); //saves changes to db
         return RedirectToAction(nameof(Index)); //redirects with updated list
     }
 }

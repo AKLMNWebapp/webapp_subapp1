@@ -18,6 +18,8 @@ builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<Collection>, CollectionRepository>();
 builder.Services.AddScoped<IRepository<Review>, ReviewRepository>();
+builder.Services.AddScoped<IRepository<User>, UserRepository>();
+
 
 
 var loggerConfiguration = new LoggerConfiguration()
