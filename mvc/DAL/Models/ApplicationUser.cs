@@ -12,4 +12,6 @@ public enum Role
 public class ApplicationUser 
 {
     public int ApplicationUserID {get; set;}
-    public string Name {get; set;} = str
+    public string Name {get; set;} = string.Empty;
+    public Role ApplicationUserRole {get; set;}
+}

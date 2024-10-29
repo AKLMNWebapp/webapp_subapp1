@@ -20,4 +20,8 @@ public class ProductDbContext : IdentityDbContext
     public virtual DbSet<AllergyProduct> AllergyProducts {get; set;}
     //public virtual DbSet<ProductCategory> ProductCategories {get; set;}
 
-    protected override void OnConfiguring(DbContextOptionsBuilde
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
+    }
+}

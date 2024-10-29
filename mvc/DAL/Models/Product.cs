@@ -23,3 +23,14 @@ namespace mvc.Models
         public double Protein { get; set; }
 
         [StringLength(200)]
+        public string? Description { get; set; } //kan disable nullable i .csproj hvis vi ønsker 
+        public string? ImageUrl { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public virtual ApplicationUser User { get; set; } = default!; //navigation property
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; } = default!; //navigation property
+        public DateTime? CreatedAt {get; set;}
+        public virtual List<AllergyProduct> AllergyProducts {get; set;} = default!; // navigation property
+        public virtual List<Review> Reviews {get; set;} = default!;
+    }
+}
