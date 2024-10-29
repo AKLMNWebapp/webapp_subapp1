@@ -61,6 +61,31 @@ public class CategoryController : Controller
         return View(category);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Update(int id) 
+    {
+        var category = await _categoryRepository.GetById(id);
+        if(category == null)
+        {
+            _logger.LogError("[CategoryController] Category not found for CategoryId {CategoryId:0000}", id);
+            return BadRequest("Category not found for the categoryId");
+        }
+        return View(category);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Update(Category category)
+    {
+        if (ModelState.IsValid)
+        {
+            bool returnOk = await _categoryRepository.Update(category);
+            if (returnOk)
+                return RedirectToAction(nameof(Index));       
+        }
+        _logger.LogError("[CategoryController] category update failed {@category}", category);
+        return View(category);
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> Delete(int id)

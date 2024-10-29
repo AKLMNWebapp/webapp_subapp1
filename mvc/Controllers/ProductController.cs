@@ -13,11 +13,13 @@ namespace mvc.Controllers;
 public class ProductController : Controller
 {
     private readonly IRepository<Product> _productRepository;
+    private readonly IRepository<Allergy> _allergyRepsitory;
     private readonly ILogger<ProductController> _logger;
 
-    public ProductController(IRepository<Product> productRepository, ILogger<ProductController> logger)
+    public ProductController(IRepository<Product> productRepository, IRepository<Allergy> allergyRepsitory, ILogger<ProductController> logger)
     {
         _productRepository = productRepository; //initialize the db
+        _allergyRepsitory = allergyRepsitory;
         _logger = logger;
     }
 
@@ -47,10 +49,10 @@ public class ProductController : Controller
 
 
     // This Get request populates the Allergy section with already existing allergies in the database
-    /*[HttpGet]
+    [HttpGet]
     public async Task<IActionResult> CreateProduct() 
     {
-        /*var allergies = await _productRepository.GetAll(); // gets list of all available allergies
+        var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
 
         // Our viewModel here is used to list all allergies in our select menu on the view
         var createProductViewModel = new CreateProductViewModel
@@ -62,58 +64,76 @@ public class ProductController : Controller
             }).ToList()
         };
 
-        //return View(createProductViewModel);
-    } */
+        return View(createProductViewModel);
+    }
     
     [HttpPost]
     public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
     {
-        var product = model.Product;
-        if (ModelState.IsValid)
+        if(ModelState.IsValid)
         {
-
-            // This code ensures that the product can only be made by users, that are logged in
-           /* var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userID))
+            if (!string.IsNullOrEmpty(model.NewAllergyName))
             {
-                return Forbid();
+                var newAllergy = new Allergy {Name = model.NewAllergyName};
+                bool allergyCreated = await _allergyRepsitory.Create(newAllergy);
+
+                if (allergyCreated)
+                {
+                    model.SelectedAllergyCodes.Add(newAllergy.AllergyCode);
+                }
             }
 
-            // This code handles user with self-made allergies that are not already pre existing in out database
-            product.UserId = int.Parse(userID); // parses id to string to use in if statement
-            if (!string.IsNullOrEmpty(model.NewAllergyName)) {
-                var newAllergy = new Allergy {Name = model.NewAllergyName}; // Creates a new allergy
-                _productRepository.Allergies.Add(newAllergy);
-                await _productRepository.SaveChangesAsync(); // Saves new allergy to database
-                model.SelectedAllergyCodes.Add(newAllergy.AllergyCode); // adds the new allergies codes to viewModel
-            }
 
-            // This loop iterates through all allergy codes that have been selected from the allergy menu
-            // The selected allergies will be saved as an AllergyProduct
-            foreach (var allergyCode in model.SelectedAllergyCodes)
+            foreach ( var allergyCode in model.SelectedAllergyCodes)
             {
-                product.AllergyProducts.Add(new AllergyProduct {
+                model.Product.AllergyProducts.Add(new AllergyProduct {
                     AllergyCode = allergyCode,
-                    Product = product
+                    Product = model.Product
                 });
             }
 
-            _productRepository.Create(product);
-            await _productRepository.SaveChangesAsync(); // updated the db with new product
-            return RedirectToAction("Index"); // redirects to Index view. */
+            bool productCreated = await _productRepository.Create(model.Product);
+            if (productCreated)
+            {
+                 _logger.LogInformation("[ProductController] product created successfully for {@product}", model.Product);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                _logger.LogError("[ProductController] product creation failed for {@model}", model);
+                return BadRequest("Product creation failed");
+            }
         }
-        return View(product);
+        return View(model);
     }
 
     [HttpGet]
     public async Task<IActionResult> Update(int id) {
-        var product = await _productRepository.GetById(id);
+
+        // Find the specific product from id
+        var product = await _productRepository.GetById(id); // uses repo method
+
+        // product not found
         if (product == null)
         {
             _logger.LogError("[ProductController] product not found when updating the ProductId {ProductId:0000}", id);
             return BadRequest("Product not found for the ProductId");
         }
-        return View(product);
+        
+        // Fetch all existing allergies
+        var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
+
+        // Our viewModel here is used to list all allergies in our select menu on the view
+        var updateProductViewModel = new CreateProductViewModel
+        {
+            Product = new Product(),
+            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem {
+                Value = allergy.AllergyCode.ToString(),
+                Text = allergy.Name
+            }).ToList()
+        };
+
+        return View(updateProductViewModel);
     }
 
     [HttpPost]
@@ -123,21 +143,18 @@ public class ProductController : Controller
         if (ModelState.IsValid)
         {
 
-            // This code ensures that the product can only be made by users, that are logged in
-           /*var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userID))
+            if (!string.IsNullOrEmpty(model.NewAllergyName))
             {
-                return Forbid();
+                var newAllergy = new Allergy {Name = model.NewAllergyName};
+                bool allergyUpdated = await _allergyRepsitory.Update(newAllergy);
+
+                if (allergyUpdated)
+                {
+                    model.SelectedAllergyCodes.Add(newAllergy.AllergyCode);
+                }
             }
 
-            // This code handles user with self-made allergies that are not already pre existing in out database
-            product.UserId = int.Parse(userID); // parses id to string to use in if statement
-            if (!string.IsNullOrEmpty(model.NewAllergyName)) {
-                var newAllergy = new Allergy {Name = model.NewAllergyName}; // Creates a new allergy
-                _productRepository.Allergies.Add(newAllergy);
-                await _productRepository.SaveChangesAsync(); // Saves new allergy to database
-                model.SelectedAllergyCodes.Add(newAllergy.AllergyCode); // adds the new allergies codes to viewModel
-            }
+            model.Product.AllergyProducts.Clear(); // avoids duplicating allergyProducts
 
             // This loop iterates through all allergy codes that have been selected from the allergy menu
             // The selected allergies will be saved as an AllergyProduct
@@ -149,9 +166,16 @@ public class ProductController : Controller
                 });
             }
 
-            _productRepository.Update(product);
-            await _productRepository.SaveChangesAsync(); // updated the db with new product
-            return RedirectToAction("Index"); // redirects to Index view. */
+            bool productUpdated = await _productRepository.Update(model.Product);
+            if (productUpdated)
+            {
+                _logger.LogInformation("[ProductController] product updated successfully for ProductId {ProductId:0000}", product.ProductId);
+                return RedirectToAction("Index"); // returns to index view
+            }
+            else
+            {
+                return BadRequest("Product creation failed");
+            }
         }
         return View(product);
     }

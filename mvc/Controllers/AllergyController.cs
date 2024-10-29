@@ -8,32 +8,35 @@ namespace mvc.Controllers;
 
 public class AllergyController : Controller
 {
-    private readonly ProductDbContext _context;
+    private readonly IRepository<Allergy> _allergyRepository;
+    private readonly ILogger<AllergyController> _logger;
 
-    public AllergyController (ProductDbContext context)
+    public AllergyController(IRepository<Allergy> allergyRepository, ILogger<AllergyController> logger)
     {
-        _context = context;
+        _allergyRepository = allergyRepository;
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
-        var allergies = await _context.Allergies.ToListAsync();
+        var allergies = await _allergyRepository.GetAll();
+        if (allergies == null)
+        {
+            _logger.LogError("[AllergyController] allergy list not found while executing _allergyRepository.GetAll()");
+            return NotFound("allergy list not found");
+        }
+        //return the view with list of products
         return View(allergies);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(int id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-        var allergy = await _context.Allergies
-            .FirstOrDefaultAsync(a => a.AllergyCode == id);
-        
+        var allergy = await _allergyRepository.GetById(id);
         if (allergy == null)
         {
-            return NotFound();
+            _logger.LogError("[AllergyController] allergy not found for allergyID {allergyID:0000}", id);
+            return BadRequest("Allergy not found for allergyID");
         }
         return View(allergy);
     }
@@ -49,20 +52,23 @@ public class AllergyController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.Allergies.Add(allergy);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index", "ProductController");
+            bool returnOk = await _allergyRepository.Create(allergy);
+            if (returnOk)
+                return RedirectToAction(nameof(Index));       
         }
-
+        _logger.LogError("[AllergyController] allergy creation failed {@category}", allergy);
         return View(allergy);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Update(int id)
+        [HttpGet]
+    public async Task<IActionResult> Update(int id) 
     {
-        var allergy = await _context.Allergies.FindAsync(id);
-        if (allergy == null) NotFound();
+        var allergy = await _allergyRepository.GetById(id);
+        if(allergy == null)
+        {
+            _logger.LogError("[AllergyController] Category not found for CategoryId {CategoryId:0000}", id);
+            return BadRequest("Category not found for the categoryId");
+        }
         return View(allergy);
     }
 
@@ -71,35 +77,37 @@ public class AllergyController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.Allergies.Update(allergy);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index", nameof(Index));
+            bool returnOk = await _allergyRepository.Update(allergy);
+            if (returnOk)
+                return RedirectToAction(nameof(Index));       
         }
+        _logger.LogWarning("[AllergyController] allergy update failed {@allergy}", allergy);
         return View(allergy);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Delete (int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var allergy = await _context.Allergies
-            .FirstOrDefaultAsync(a => a.AllergyCode == id);
-        
+        //find category by id
+        var allergy = await _allergyRepository.GetById(id);
         if (allergy == null)
         {
-            return NotFound();
+            _logger.LogError("[AllergyController] allergy not found for AllergyID {AllergyID:0000}", id);
+            return NotFound(); //return 404 if category not found
         }
-        return View(allergy);
+        return View(allergy); //return delete confirmation view
     }
 
-    [HttpPost, ActionName("Delete")]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+   [HttpPost]
+   public async Task<IActionResult> DeleteConfirmation(int id)
+   {
+    //find category by id
+    bool returnOk = await _allergyRepository.Delete(id);
+    if (!returnOk)
     {
-        var allergy = await _context.Allergies.FindAsync(id);
-        if (allergy != null)
-        {
-            _context.Allergies.Remove(allergy);
-            await _context.SaveChangesAsync();
+        _logger.LogError("[AllergyController] category deletion failed for AllergyID {AllergyID:0000}",id);
+        return BadRequest("Allergy not found for the AllergyID"); //return 404 if category not found
         }
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index)); //return view with updated list
     }
 }

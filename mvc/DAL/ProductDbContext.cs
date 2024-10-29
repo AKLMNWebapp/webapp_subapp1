@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using mvc.Models;
 
 namespace mvc.DAL;
 
-public class ProductDbContext : DbContext
+public class ProductDbContext : IdentityDbContext<User>
 {
     public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
     {
@@ -15,7 +16,7 @@ public class ProductDbContext : DbContext
     public virtual DbSet<Category> Categories { get; set; }
     public virtual DbSet<Collection> Collections { get; set; }
     public virtual DbSet<Review> Reviews { get; set; }
-    public virtual DbSet<User> Users  {get; set; }
+    //public virtual DbSet<User> Users  {get; set; }
     public virtual DbSet<AllergyProduct> AllergyProducts {get; set;}
     //public virtual DbSet<ProductCategory> ProductCategories {get; set;}
 

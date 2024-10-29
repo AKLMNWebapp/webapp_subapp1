@@ -19,6 +19,7 @@ builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<Collection>, CollectionRepository>();
 builder.Services.AddScoped<IRepository<Review>, ReviewRepository>();
 builder.Services.AddScoped<IRepository<User>, UserRepository>();
+builder.Services.AddScoped<IRepository<Allergy>, AllergyRepository>();
 
 
 
@@ -50,6 +51,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",
