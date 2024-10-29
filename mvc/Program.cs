@@ -26,6 +26,8 @@ builder.Services.AddScoped<IRepository<ApplicationUser>, UserRepository>();
 builder.Services.AddScoped<IRepository<Allergy>, AllergyRepository>();
 
 
+builder.Services.AddRazorPages(); // Enables use of razorpages in Areas
+builder.Services.AddSession(); // add service to enable sessions
 
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Information() // Levels: Trace< Information < Warning < Error < Fatal
@@ -54,11 +56,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Middleware for authentication and authorization
 app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();
