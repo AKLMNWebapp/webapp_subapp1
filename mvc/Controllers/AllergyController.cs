@@ -8,36 +8,39 @@ namespace mvc.Controllers;
 
 public class AllergyController : Controller
 {
-    private readonly ProductDbContext _context;
+    private readonly IRepository<Allergy> _allergyRepository;
+    private readonly ILogger<AllergyController> _logger;
 
-    public AllergyController (ProductDbContext context)
+    public AllergyController (IRepository<Allergy> allergyRepository, ILogger<AllergyController> logger)
     {
-        _context = context;
+        _allergyRepository = allergyRepository;
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
-        var allergies = await _context.Allergies.ToListAsync();
+        var allergies = await _allergyRepository.GetAll();
+        if (allergies == null)
+        {
+            _logger.LogError("[AllergyController] allergy list not found while executing GetAll()");
+            return NotFound("Allergy list not found");
+        }
         return View(allergies);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(int id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
-        var allergy = await _context.Allergies
-            .FirstOrDefaultAsync(a => a.AllergyCode == id);
-        
+        var allergy = await _allergyRepository.GetById(id);
+
         if (allergy == null)
         {
+             _logger.LogError("[AllergyController] Allergy not found for AllergyCode {AllergyCode:0000}", id);
             return NotFound();
         }
         return View(allergy);
     }
-
+/*
     [HttpGet]
     public IActionResult CreateAllergy() 
     {
@@ -77,12 +80,11 @@ public class AllergyController : Controller
         }
         return View(allergy);
     }
-
+*/
     [HttpGet]
     public async Task<IActionResult> Delete (int id)
     {
-        var allergy = await _context.Allergies
-            .FirstOrDefaultAsync(a => a.AllergyCode == id);
+        var allergy = await _allergyRepository.GetById(id);
         
         if (allergy == null)
         {
@@ -94,11 +96,10 @@ public class AllergyController : Controller
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var allergy = await _context.Allergies.FindAsync(id);
+        var allergy = await _allergyRepository.GetById(id);
         if (allergy != null)
         {
-            _context.Allergies.Remove(allergy);
-            await _context.SaveChangesAsync();
+            await _allergyRepository.Delete(id);
         }
         return RedirectToAction(nameof(Index));
     }
