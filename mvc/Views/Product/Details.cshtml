@@ -1,0 +1,47 @@
+@model mvc.Models.Product
+
+<h2>@Model.Name</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid" />
+    </div>
+    <div class="col-md-6">
+        <h3>Product Information</h3>
+        <p><strong>Description:</strong> @Model.Description</p>
+        <p><strong>Energy:</strong> @Model.Energy kcal</p>
+        <p><strong>Fat:</strong> @Model.Fat g</p>
+        <p><strong>Carbohydrates:</strong> @Model.Carbohydrates g</p>
+        <p><strong>Protein:</strong> @Model.Protein g</p>
+        
+        <button id="addToCollectionButton" class="btn btn-primary">Add to Collection</button>
+    </div>
+</div>
+
+<h2>Reviews</h2>
+<div id="reviews">
+    @if (Model.Reviews.Any())
+    {
+        @foreach (var review in Model.Reviews)
+        {
+            <div class="review">
+                <strong>@review.User.Email</strong>
+                <p>Rating: @review.Rating</p>
+                <p>@review.Comment</p>
+                <p><em>Posted on: @review.CreatedAt?.ToString("g")</em></p>
+
+                <form asp-action="Delete" asp-controller="Review" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@review.ReviewId" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+            <hr />
+        }
+    }
+    else
+    {
+        <p>No reviews available for this product.</p>
+    }
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Products</a>
