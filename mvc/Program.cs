@@ -3,8 +3,10 @@ using mvc.DAL;
 using mvc.Models;
 using Serilog;
 using Serilog.Events;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("ProductDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ProductDbContextConnection' not found.");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -14,11 +16,13 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
         builder.Configuration["ConnectionStrings:ProductDbContextConnection"]);
 });
 
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ProductDbContext>();
+
 builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<Collection>, CollectionRepository>();
 builder.Services.AddScoped<IRepository<Review>, ReviewRepository>();
-builder.Services.AddScoped<IRepository<User>, UserRepository>();
+builder.Services.AddScoped<IRepository<ApplicationUser>, UserRepository>();
 builder.Services.AddScoped<IRepository<Allergy>, AllergyRepository>();
 
 

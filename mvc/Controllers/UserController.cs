@@ -5,12 +5,12 @@ using mvc.DAL;
 
 namespace mvc.Controllers;
 
-public class UserController : Controller
+public class ApplicationUserController : Controller
 {
-    private readonly IRepository<User> _userRepository;
-    private readonly ILogger<UserController> _logger;
+    private readonly IRepository<ApplicationUser> _userRepository;
+    private readonly ILogger<ApplicationUserController> _logger;
 
-    public UserController(IRepository<User> userRepository, ILogger<UserController> logger)
+    public ApplicationUserController(IRepository<ApplicationUser> userRepository, ILogger<ApplicationUserController> logger)
     {
         _userRepository = userRepository;
         _logger = logger;
@@ -34,7 +34,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(User user) 
+    public async Task<IActionResult> Create(ApplicationUser user) 
     {
         if(ModelState.IsValid) 
         {
@@ -59,7 +59,7 @@ public class UserController : Controller
 
     // Updates user from id specified in GetRequest
     [HttpPost]
-    public async Task<IActionResult> Update(User user)
+    public async Task<IActionResult> Update(ApplicationUser user)
     {
         if(ModelState.IsValid) 
         {

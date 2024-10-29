@@ -13,33 +13,30 @@ public static class DBInit
         context.Database.EnsureDeleted(); 
         context.Database.EnsureCreated();
 
-        if (!context.Users.Any())
+        if (!context.AppUsers.Any())
         {
-            var users = new List<User>
+            var applicationUsers = new List<ApplicationUser>
             {
-                new User 
+                new ApplicationUser 
                 {
-                    UserId = 1,
-                    Email = "test1@gmail.com", 
-                    UserRole = Role.Admin, 
-                    Password = "test123",
+                    ApplicationUserID = 1,
+                    Name = "test1", 
+                    ApplicationUserRole = Role.Admin, 
                 },
-                new User 
+               new ApplicationUser 
                 {
-                    UserId = 2,
-                    Email = "test2@gmail.com", 
-                    UserRole = Role.Business, 
-                    Password = "test123",
+                    ApplicationUserID = 2,
+                    Name = "test2", 
+                    ApplicationUserRole = Role.Business, 
                 },
-                new User 
+               new ApplicationUser 
                 {
-                    UserId = 3,
-                    Email = "test3@gmail.com", 
-                    UserRole = Role.User, 
-                    Password = "test123",
+                    ApplicationUserID = 3,
+                    Name = "test2", 
+                    ApplicationUserRole = Role.User, 
                 },
             };
-            context.Users.AddRange(users);
+            context.AppUsers.AddRange(applicationUsers);
             context.SaveChanges();
         }
 
@@ -82,7 +79,7 @@ public static class DBInit
                     Protein = 2.3,
                     Description = "test",
                     ImageUrl = "/images/eggs.jpg",
-                    UserId = 1,
+                    UserId = "1",
                     CategoryId = 1,
                 },
 
@@ -95,7 +92,7 @@ public static class DBInit
                     Protein = 2,
                     Description = "test",
                     ImageUrl = "/imagea/milk.jpg",
-                    UserId = 1,
+                    UserId = "1",
                     CategoryId = 2,
                 },
                 new Product
@@ -107,7 +104,7 @@ public static class DBInit
                     Protein = 2,
                     Description = "test",
                     ImageUrl = "/imagea/milk.jpg",
-                    UserId = 1,
+                    UserId = "1",
                     CategoryId = 4,
                 },
                 new Product
@@ -119,7 +116,7 @@ public static class DBInit
                     Protein = 8,
                     Description = "this is milkkkkk",
                     ImageUrl = "/images/milk.jpg",
-                    UserId = 1,
+                    UserId = "1",
                     CategoryId = 1,
                 }
             };
@@ -144,7 +141,7 @@ public static class DBInit
             {
                 new Review
                 {
-                    UserId = 1,
+                    UserId = "1",
                     ProductId = 1,
                     Rating = 4.5m,
                     Comment = "Amazing",
@@ -152,7 +149,7 @@ public static class DBInit
                 },
                 new Review
                 {
-                    UserId = 1,
+                    UserId = "1",
                     ProductId = 1,
                     Rating = 2.5m,
                     Comment = "Hmmmmm",
@@ -169,14 +166,14 @@ public static class DBInit
             {
                 new Collection
                 {
-                UserId = 1,
+                UserId = "1",
                 Name = "Vegan",
                 Products = new List<Product>(),
                 CreatedAt = DateTime.Now
                 },
                 new Collection
                 {
-                UserId = 1,
+                UserId = "1",
                 Name = "Meat",
                 Products = new List<Product>(),
                 CreatedAt = DateTime.Now

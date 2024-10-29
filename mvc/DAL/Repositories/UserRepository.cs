@@ -3,7 +3,7 @@ using mvc.Models;
 
 namespace mvc.DAL;
 
-public class UserRepository : IRepository<User>
+public class UserRepository : IRepository<ApplicationUser>
 {
     private readonly ProductDbContext _db;
     private ILogger<UserRepository> _logger;
@@ -14,24 +14,24 @@ public class UserRepository : IRepository<User>
         _logger = logger;
     }
 
-    public async Task<IEnumerable<User>> GetAll()
+    public async Task<IEnumerable<ApplicationUser>> GetAll()
     {
         try
         {
-            return await _db.Users.ToArrayAsync();
+            return await _db.AppUsers.ToArrayAsync();
         }
         catch (Exception e)
         {
             _logger.LogError("[UserRepository] ToListAsync() failed when GetAll(), error message: {e}", e.Message);
-            return new List<User>();
+            return new List<ApplicationUser>();
         }
     }
 
-    public async Task<User?> GetById(int id)
+    public async Task<ApplicationUser?> GetById(int id)
     {
         try
         {
-            return await _db.Users.FindAsync(id);
+            return await _db.AppUsers.FindAsync(id);
         }
         catch (Exception e)
         {
@@ -40,11 +40,11 @@ public class UserRepository : IRepository<User>
         }
     }
 
-    public async Task<bool> Create(User user)
+    public async Task<bool> Create(ApplicationUser user)
     {
         try
         {
-            _db.Users.Add(user);
+            _db.AppUsers.Add(user);
             await _db.SaveChangesAsync();
             return true;
         }
@@ -55,11 +55,11 @@ public class UserRepository : IRepository<User>
         }  
     }
 
-    public async Task<bool> Update(User user)
+    public async Task<bool> Update(ApplicationUser user)
     {
         try
         {
-            _db.Users.Update(user);
+            _db.AppUsers.Update(user);
             await _db.SaveChangesAsync();
             return true;
         }
@@ -74,13 +74,13 @@ public class UserRepository : IRepository<User>
     {
         try
         {
-            var user = await _db.Users.FindAsync(id);
+            var user = await _db.AppUsers.FindAsync(id);
             if (user == null)
             {
                 _logger.LogError("[UserRepository] user not found for the UserId {UserId:0000}", id);
                 return false;
             }
-            _db.Users.Remove(user);
+            _db.AppUsers.Remove(user);
             await _db.SaveChangesAsync();
             return true;
         }
