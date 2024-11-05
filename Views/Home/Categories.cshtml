@@ -1,5 +1,5 @@
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";  // This ensures the view uses the shared layout
+    Layout = "~/Views/Shared/_Layout.cshtml"; // This ensures the view uses the shared layout
     ViewData["Title"] = "Categories";
 }
 
@@ -10,18 +10,24 @@
     </header>
 
     <section class="categories-section">
-        <!-- Link to the FruitsAndVegetables view for subcategories -->
+        <!-- Link to the Fruits and Vegetables view for subcategories -->
         <div class="category-button">
             <a href="@Url.Action("FruitsAndVegetables", "Products")">Fruits and Vegetables</a>
         </div>
+        
+        <!-- Link to the Beverages page -->
         <div class="category-button">
-            <a href="@Url.Action("CategoryDetails", "Products", new { category = "Beverages" })">Beverages</a>
+            <a href="@Url.Action("Beverages", "Products")">Beverages</a>
         </div>
+        
+        <!-- Link to the Dairy, Cheese, and Eggs page -->
         <div class="category-button">
-            <a href="@Url.Action("CategoryDetails", "Products", new { category = "DairyCheeseEggs" })">Dairy, Cheese, and Eggs</a>
+            <a href="@Url.Action("DairyCheeseEggs", "Products")">Dairy, Cheese, and Eggs</a>
         </div>
+        
+        <!-- Link to the Vegan Products page -->
         <div class="category-button">
-            <a href="@Url.Action("CategoryDetails", "Products", new { category = "VeganProducts" })">Vegan Products</a>
+            <a href="@Url.Action("VeganProducts", "Products")">Vegan Products</a>
         </div>
     </section>
 </div>
