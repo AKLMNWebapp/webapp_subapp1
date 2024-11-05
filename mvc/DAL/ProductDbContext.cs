@@ -4,7 +4,7 @@ using mvc.Models;
 
 namespace mvc.DAL;
 
-public class ProductDbContext : IdentityDbContext
+public class ProductDbContext : IdentityDbContext<ApplicationUser>
 {
     public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
     {

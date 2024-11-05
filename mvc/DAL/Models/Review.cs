@@ -16,4 +16,11 @@ public class Review
    [StringLength(200)]
     public string? Comment {get; set;}
     public DateTime? CreatedAt {get; set;}
+
+    [StringLength(200)]
+    public string? Response {get; set;}
+
+    public string? ResponseUserID {get; set;}
+
+    public virtual ApplicationUser? ResponseUser {get; set;} = default!; // navigation property
  }

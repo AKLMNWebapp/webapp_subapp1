@@ -17,7 +17,7 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
         builder.Configuration["ConnectionStrings:ProductDbContextConnection"]);
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>() // Add role support to identity configuration
     .AddEntityFrameworkStores<ProductDbContext>();
 
@@ -46,13 +46,6 @@ builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
 
-// This creates roles during startup
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    CreateRolesAsync(roleManager).Wait();
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -60,7 +53,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     //app.UseHsts();
 }
-DBInit.Seed(app);
+
+await DBInit.Seed(app);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -78,19 +72,3 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
-
-// This method assures our different user roles are created when the application starts.
-async Task CreateRolesAsync(RoleManager<IdentityRole> roleManager)
-{
-    string[] roleNames = {"Admin", "Buisness", "User"};
-    IdentityResult roleResult;
-
-    foreach (var roleName in roleNames)
-    {
-        var roleExist = await roleManager.RoleExistsAsync(roleName);
-        if (!roleExist)
-        {
-            roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
-        }
-    }
-}

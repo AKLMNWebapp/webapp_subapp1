@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mvc.Models;
 using mvc.DAL;
+using System.Security.Claims;
 
 namespace mvc.Controllers;
 
@@ -112,5 +113,48 @@ public class ReviewController : Controller
             _logger.LogError("[ReviewController] Failed to delete review with ReviewId {ReviewId}", id);
             return View(review);
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Respond(int id)
+    {
+        var review = await _reviewRepository.GetById(id);
+        if (review == null) {
+            _logger.LogError("[ReviewController] review not found for ReviewId {ReviewId:0000}", id);
+            return BadRequest("Review not found for the ReviewId");
+        }
+
+        return View(review);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Respond(int id, string response)
+    {
+        var review = await _reviewRepository.GetById(id);
+        if (review == null) {
+            _logger.LogError("[ReviewController] review not found for ReviewId {ReviewId:0000}", id);
+            return BadRequest("Review not found for the ReviewId");
+        }
+
+        review.Response = response;
+
+        // returns current userID
+        var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userID == null) return Unauthorized();
+
+        review.ResponseUserID = userID;
+
+        var success = await _reviewRepository.Update(review);
+        if (success)
+        {
+            _logger.LogInformation("[ReviewController] Successfully added review response to review with ReviewId {ReviewId}", review.ReviewId);
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            _logger.LogError("[ReviewController] Failed to add response to review with ReviewId {ReviewId:0000}", id);
+            return BadRequest("Failed to add response");
+        }
+
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using mvc.DAL;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 
 namespace mvc.Controllers;
 
@@ -50,6 +51,7 @@ public class ProductController : Controller
 
     // This Get request populates the Allergy section with already existing allergies in the database
     [HttpGet]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> CreateProduct() 
     {
         var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
@@ -68,6 +70,7 @@ public class ProductController : Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
     {
         if(ModelState.IsValid)
@@ -108,6 +111,7 @@ public class ProductController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> Update(int id) {
 
         // Find the specific product from id
@@ -137,6 +141,7 @@ public class ProductController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> Update(CreateProductViewModel model) 
     {
         var product = model.Product;
@@ -179,6 +184,9 @@ public class ProductController : Controller
         }
         return View(product);
     }
+
+    [HttpGet]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> Delete(int id)
     {
         var product = await _productRepository.GetById(id);
@@ -190,6 +198,8 @@ public class ProductController : Controller
         return View(product);
     }
 
+    [HttpPost]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         bool returnOk = await _productRepository.Delete(id);
