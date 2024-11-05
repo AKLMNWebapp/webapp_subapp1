@@ -42,3 +42,11 @@ app.MapControllerRoute(
     defaults: new { controller = "Products", action = "DairyCheeseEggs" });
 
 app.Run();
+
+// Add a specific route for Beverages page
+app.MapControllerRoute(
+    name: "beverages",
+    pattern: "Products/Beverages",
+    defaults: new { controller = "Products", action = "Beverages" });
+
+app.Run();
