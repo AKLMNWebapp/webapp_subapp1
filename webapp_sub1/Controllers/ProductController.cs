@@ -156,6 +156,60 @@ namespace webapp_sub1.Controllers
             return View(subcategories); // Pass the subcategories to the view
         }
 
+        // Action method to display the "Beverages" category with subcategories
+        public IActionResult Beverages()
+        {
+            // Mock data for beverage subcategories and products
+            var subcategories = new List<Subcategory>
+            {
+                new Subcategory
+                {
+                    Name = "Juices",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Orange Juice", ImageUrl = "orange_juice.jpg" },
+                        new Product { Name = "Apple Juice", ImageUrl = "apple_juice.jpg" },
+                        new Product { Name = "Grape Juice", ImageUrl = "grape_juice.jpg" },
+                        new Product { Name = "Pineapple Juice", ImageUrl = "pineapple_juice.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Soda",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Coca Cola", ImageUrl = "coca_cola.jpg" },
+                        new Product { Name = "Pepsi", ImageUrl = "pepsi.jpg" },
+                        new Product { Name = "Sprite", ImageUrl = "sprite.jpg" },
+                        new Product { Name = "Fanta", ImageUrl = "fanta.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Water",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Mineral Water", ImageUrl = "mineral_water.jpg" },
+                        new Product { Name = "Sparkling Water", ImageUrl = "sparkling_water.jpg" },
+                        new Product { Name = "Flavored Water", ImageUrl = "flavored_water.jpg" }
+                    }
+                },
+                new Subcategory
+                {
+                    Name = "Smoothies",
+                    Products = new List<Product>
+                    {
+                        new Product { Name = "Strawberry Banana Smoothie", ImageUrl = "strawberry_banana_smoothie.jpg" },
+                        new Product { Name = "Mango Smoothie", ImageUrl = "mango_smoothie.jpg" },
+                        new Product { Name = "Green Smoothie", ImageUrl = "green_smoothie.jpg" },
+                        new Product { Name = "Blueberry Smoothie", ImageUrl = "blueberry_smoothie.jpg" }
+                    }
+                }
+            };
+
+            return View(subcategories);  // Pass the subcategories to the view
+        }
+
         // Existing method: Handle category details for other categories
         public IActionResult CategoryDetails(string category)
         {
