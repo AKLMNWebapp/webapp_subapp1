@@ -1,8 +1,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using mvc.Models;
-using mvc.DAL;
+using mvc.DAL.Models;
+using mvc.DAL.Repositories;
 
 namespace mvc.Controllers;
 

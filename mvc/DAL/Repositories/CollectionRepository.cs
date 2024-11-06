@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using mvc.Models;
+using mvc.DAL.Models;
 
-namespace mvc.DAL;
+namespace mvc.DAL.Repositories;
 
 public class CollectionRepository : IRepository<Collection>
 {

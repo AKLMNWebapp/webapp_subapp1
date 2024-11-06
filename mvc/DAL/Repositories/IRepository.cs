@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http.Features;
-using mvc.Models;
 
-namespace mvc.DAL;
+namespace mvc.DAL.Repositories;
 
 public interface IRepository<T> where T : class
 {

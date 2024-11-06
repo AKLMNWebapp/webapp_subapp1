@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-using mvc.Models;
+using mvc.DAL.Models;
 
-namespace mvc.ViewModels;
+namespace mvc.DAL.ViewModels;
 
 public class CreateProductViewModel
 {
