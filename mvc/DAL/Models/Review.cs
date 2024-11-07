@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-namespace mvc.Models;
+namespace mvc.DAL.Models;
 
 public class Review
- {
+{
     public int ReviewId {get; set;}
     public string UserId {get; set;} = string.Empty;
     public virtual ApplicationUser User {get; set; } = default!; //navigation property
@@ -23,4 +23,4 @@ public class Review
     public string? ResponseUserID {get; set;}
 
     public virtual ApplicationUser? ResponseUser {get; set;} = default!; // navigation property
- }
+}

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using mvc.ViewModels;
-using mvc.Models;
+using mvc.DAL.ViewModels;
+using mvc.DAL.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
-using mvc.DAL;
+using mvc.DAL.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authorization;
 
@@ -34,7 +34,8 @@ public class ProductController : Controller
             return NotFound("Product list not found");
         }
         //return the view with list of products
-        return View(products);
+        var productViewModel = new ProductViewModel(products, "Index");
+        return View(productViewModel);
     }
 
     public async Task<IActionResult> Details(int id)

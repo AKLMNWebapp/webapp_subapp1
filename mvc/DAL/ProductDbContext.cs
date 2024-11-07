@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using mvc.Models;
+using mvc.DAL.Models;
 
 namespace mvc.DAL;
 

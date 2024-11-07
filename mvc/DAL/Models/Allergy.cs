@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations; // data annotations
-namespace mvc.Models;
+namespace mvc.DAL.Models;
 
 public class Allergy
  {

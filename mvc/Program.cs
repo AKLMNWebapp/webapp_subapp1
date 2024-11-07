@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using mvc.DAL.Repositories;
 using mvc.DAL;
-using mvc.Models;
+using mvc.DAL.Models;
 using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;

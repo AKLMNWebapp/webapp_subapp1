@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-namespace mvc.Models;
+namespace mvc.DAL.Models;
 
 public class Collection {
     public int CollectionId {get; set;}

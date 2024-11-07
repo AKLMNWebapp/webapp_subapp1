@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.Design;
-namespace mvc.Models;
+namespace mvc.DAL.Models;
 
 public class AllergyProduct
 {

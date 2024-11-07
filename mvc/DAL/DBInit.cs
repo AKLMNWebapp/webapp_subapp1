@@ -1,7 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using mvc.Models;
+using mvc.DAL.Models;
 
 
 namespace mvc.DAL;
