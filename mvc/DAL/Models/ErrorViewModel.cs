@@ -1,4 +1,4 @@
-namespace mvc.Models;
+namespace mvc.DAL.Models;
 
 public class ErrorViewModel
 {
