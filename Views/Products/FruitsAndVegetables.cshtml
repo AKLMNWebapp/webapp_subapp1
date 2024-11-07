@@ -1,0 +1,34 @@
+@using webapp_sub1.Models
+@model List<webapp_sub1.Models.Subcategory>
+
+<div class="fruits-vegetables-page">
+    <h1>Frukt og Grønnsaker</h1>
+
+    @foreach (var subcategory in Model) 
+    {
+        <div class="subcategory">
+            <h2 class="subcategory-heading">@subcategory.Name</h2>
+            <div class="product-container">
+                @if (subcategory.Products != null && subcategory.Products.Any()) 
+                {
+                    @foreach (var product in subcategory.Products) 
+                    {
+                        <div class="product-card">
+                            <div class="product-image">
+                                <img src="@Url.Content($"/images/{product.ImageUrl}")" alt="@product.Name" />
+                                <div class="product-overlay">
+                                    <h3>@product.Name</h3>
+                                    <p>@product.Description</p> <!-- Display dynamic product description -->
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Ingen produkter tilgjengelig i denne underkategorien.</p>
+                }
+            </div>
+        </div>
+    }
+</div>
