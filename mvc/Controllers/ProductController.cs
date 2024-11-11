@@ -97,9 +97,11 @@ public class ProductController : Controller
             }
 
             bool productCreated = await _productRepository.Create(model.Product);
+            Console.WriteLine("Creating product: " + model.Product.Name);
             if (productCreated)
             {
-                 _logger.LogInformation("[ProductController] product created successfully for {@product}", model.Product);
+                Console.WriteLine("Product saved!");
+                _logger.LogInformation("[ProductController] product created successfully for {@product}", model.Product);
                 return RedirectToAction("Index");
             }
             else

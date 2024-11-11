@@ -5,6 +5,4 @@ namespace mvc.DAL.Models;
 
 public class ApplicationUser : IdentityUser
 {
-    public int ApplicationUserID {get; set;}
-    public string Name {get; set;} = string.Empty;
 }

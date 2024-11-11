@@ -8,7 +8,7 @@ public class ProductDbContext : IdentityDbContext<ApplicationUser>
 {
     public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
     {
-        //Database.EnsureCreated();
+        Database.EnsureCreated();
     }
 
     public virtual DbSet<Product> Products { get; set; }

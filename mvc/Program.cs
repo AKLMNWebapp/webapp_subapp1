@@ -6,6 +6,7 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Threading.Tasks.Dataflow;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ProductDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ProductDbContextConnection' not found.");
@@ -18,7 +19,7 @@ builder.Services.AddDbContext<ProductDbContext>(options => {
         builder.Configuration["ConnectionStrings:ProductDbContextConnection"]);
 });
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>()
     .AddRoles<IdentityRole>() // Add role support to identity configuration
     .AddEntityFrameworkStores<ProductDbContext>();
 
@@ -59,7 +60,7 @@ await DBInit.Seed(app);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 // Middleware for authentication and authorization

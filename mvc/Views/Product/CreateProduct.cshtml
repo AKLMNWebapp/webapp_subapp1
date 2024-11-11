@@ -1,0 +1,62 @@
+@model mvc.DAL.ViewModels.CreateProductViewModel
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<h1>Create New Product</h1>
+
+<form asp-action="CreateProduct" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Product.Name" class="control-label"></label>
+        <input asp-for="Product.Name" class="form-control" />
+        <span asp-validation-for="Product.Name" class="text-danger"></span>
+    </div>
+        <div class="form-group">
+        <label asp-for="Product.Energy" class="control-label"></label>
+        <input asp-for="Product.Energy" class="form-control" />
+        <span asp-validation-for="Product.Energy" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Fat" class="control-label"></label>
+        <input asp-for="Product.Fat" class="form-control" />
+        <span asp-validation-for="Product.Fat" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Carbohydrates" class="control-label"></label>
+        <input asp-for="Product.Carbohydrates" class="form-control" />
+        <span asp-validation-for="Product.Carbohydrates" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Protein" class="control-label"></label>
+        <input asp-for="Product.Protein" class="form-control" />
+        <span asp-validation-for="Product.Protein" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Description" class="control-label"></label>
+        <input asp-for="Product.Description" class="form-control" />
+        <span asp-validation-for="Product.Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.ImageUrl" class="control-label"></label>
+        <input asp-for="Product.ImageUrl" class="form-control" />
+        <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label>Allergies</label>
+        <select asp-for="SelectedAllergyCodes" class="form-control" asp-items="Model.AllergyMultiSelectList" multiple="multiple" ></select>
+    </div>
+
+    <div class="form-group">
+        <label>Didn't find allergy?</label>
+        <input asp-for="NewAllergyName" class="form-control" />
+        <span asp-validation-for="NewAllergyName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to products view</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

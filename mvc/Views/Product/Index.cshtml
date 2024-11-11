@@ -1,0 +1,35 @@
+@model mvc.DAL.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = "Product list";
+}
+
+<h1>Products</h1>
+
+<a asp-action="CreateProduct" method="get" class="btn btn-primary">Create Product</a>
+
+<div class="container">
+    <div class="row">
+        @{foreach (var product in Model.Products) {
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">
+                        <strong>Energy:</strong>@product.Energy<br>
+                        <strong>Fat:</strong>@product.Fat<br>
+                        <strong>Protein:</strong>@product.Protein<br>
+                        <strong>Carbohydrates:</strong>@product.Carbohydrates<br>
+                        <strong>Category:</strong>@product.Category.Name
+                    </p>
+                </div>
+                <a asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-info">Details</a>
+                <a asp-action="Update" asp-route-id="@product.ProductId" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@product.ProductId" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+
+        }}
+    </div>
+</div>

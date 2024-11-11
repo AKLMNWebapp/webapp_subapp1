@@ -33,8 +33,7 @@ public static class DBInit
         {
             UserName = adminEmail,
             Email = adminEmail,
-            EmailConfirmed = true,
-            Name = "Admin"    
+            EmailConfirmed = true   
         };
 
         var businessEmail = "business1@example.com";
@@ -42,8 +41,7 @@ public static class DBInit
         {
             UserName = businessEmail,
             Email = businessEmail,
-            EmailConfirmed = true,
-            Name = "Business"    
+            EmailConfirmed = true 
         }; 
 
         var regularUserEmail = "user@example.com";
@@ -51,8 +49,7 @@ public static class DBInit
         {
             UserName = regularUserEmail,
             Email = regularUserEmail,
-            EmailConfirmed = true,
-            Name = "User"    
+            EmailConfirmed = true  
         };         
 
         if (await userManager.FindByEmailAsync(adminEmail) == null) {
