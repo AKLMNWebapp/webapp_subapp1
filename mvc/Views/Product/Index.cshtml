@@ -5,7 +5,7 @@
 
 <h1>Products</h1>
 
-<a asp-action="CreateProduct" method="get" class="btn btn-primary">Create Product</a>
+<a asp-action="CreateProduct" class="btn btn-primary">Create Product</a>
 
 <div class="container">
     <div class="row">
@@ -24,6 +24,7 @@
                         <strong>Category:</strong>@product.Category.Name
                     </p>
                 </div>
+                <a asp-action="Review" asp-route-id="@product.ProductId" class="btn btn-warning">Add a review</a>
                 <a asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-info">Details</a>
                 <a asp-action="Update" asp-route-id="@product.ProductId" class="btn btn-warning">Edit</a>
                 <a asp-action="Delete" asp-route-id="@product.ProductId" class="btn btn-danger">Delete</a>
