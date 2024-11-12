@@ -1,0 +1,13 @@
+@model Review
+
+<h2>Create New Review</h2>
+
+<form asp-action="CreateCategory">
+    <div class="form-group">
+        <label asp-for="Comment"></label><span class="text-danger">*</span>
+        <input asp-for="Comment" class="form-control" />
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-outline-success">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to Categories</a>
+</form>

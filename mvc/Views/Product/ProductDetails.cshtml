@@ -5,6 +5,8 @@
 <div class="row gx-5">
     <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid col-5" />
     <div class="col-7">
+        <a asp-action="Update" asp-route-id="@Model.ProductId" class="btn btn-warning">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-danger">Delete</a>
         <h3 class="pull-right">Product description</h3>
         <p>@Model.Description</p>
         <h3 class="pull-right">Nutritional values</h3>
@@ -27,4 +29,5 @@
         <p><strong>Created: </strong>@Model.CreatedAt</p>
     </div>
 </div>
- <p><a href="/Product/Index">Back to product list!</a></p>
+ <p><a href="/Product/Index" class="btn btn-primary">Back to product list!</a></p>
+ <a  asp-controller="CreateReview" asp-action="Review" asp-route-id="@Model.ProductId" class="btn btn-info">Create a review</a>
