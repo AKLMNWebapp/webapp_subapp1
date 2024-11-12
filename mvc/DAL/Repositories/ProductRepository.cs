@@ -66,7 +66,7 @@ public class ProductRepository : IRepository<Product>
         }
         catch (Exception e)
         {
-            _logger.LogError("[ProductRepository] product FindAsync(id) failed when updating the ProductId {ProductId:0000}, error message: {e}",
+            _logger.LogError("[ProductRepository] product FindAsync(id) failed when updating the ProductId {ProductId}, error message: {e}",
             product, e.Message);
             return false;
         }

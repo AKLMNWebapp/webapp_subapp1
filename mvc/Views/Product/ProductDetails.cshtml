@@ -9,7 +9,7 @@
         <p>@Model.Description</p>
         <h3 class="pull-right">Nutritional values</h3>
         <p><strong>Energy: </strong>@Model.Energy.ToString("0.00 kcal")</p>
-        <p>strong>Fat: </strong>@Model.Fat.ToString("0.00 g")</p>
+        <p><strong>Fat: </strong>@Model.Fat.ToString("0.00 g")</p>
         <p><strong>Protein: </strong>@Model.Protein.ToString("0.00 g")</p>
         <p><strong>Carbohydrates: </strong>@Model.Carbohydrates.ToString("0.00 g")</p>
         <p><strong>Category: </strong>@Model.Category.Name<br></p>
@@ -24,6 +24,7 @@
                 </ul>
                 }
         </p>
+        <p><strong>Created: </strong>@Model.CreatedAt</p>
     </div>
 </div>
  <p><a href="/Product/Index">Back to product list!</a></p>

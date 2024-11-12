@@ -59,7 +59,7 @@ public class ProductController : Controller
     // This Get request populates the Allergy section with already existing allergies in the database
     [HttpGet]
     [Authorize(Roles = "Admin, Business")]
-    public async Task<IActionResult> CreateProduct() 
+    public async Task<IActionResult> CreateProduct()
     {
         var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
         var categories = await _categoryRepository.GetAll();
@@ -68,12 +68,14 @@ public class ProductController : Controller
         var createProductViewModel = new CreateProductViewModel
         {
             Product = new Product(),
-            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem {
+            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
+            {
                 Value = allergy.AllergyCode.ToString(),
                 Text = allergy.Name
             }).ToList(),
 
-            CategorySelectList = categories.Select(cateorgy => new SelectListItem {
+            CategorySelectList = categories.Select(cateorgy => new SelectListItem
+            {
                 Value = cateorgy.CategoryId.ToString(),
                 Text = cateorgy.Name
             }).ToList()
@@ -81,34 +83,34 @@ public class ProductController : Controller
 
         return View(createProductViewModel);
     }
-    
+
     [HttpPost]
     [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userId != null)
-            {
-                model.Product.UserId = userId;
-                var user = await _userManager.FindByIdAsync(userId);
-                model.Product.User = user;
-            }
-        if (!ModelState.IsValid)
-    {
-        // Log all ModelState errors
-        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        if (userId != null)
         {
-            _logger.LogError($"ModelState Error: {error.ErrorMessage}");
+            model.Product.UserId = userId;
+            var user = await _userManager.FindByIdAsync(userId);
+            model.Product.User = user;
         }
-        return View(model);  // Return the view with model so that errors can be displayed
-    }
-        if(ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            // Log all ModelState errors
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _logger.LogError($"ModelState Error: {error.ErrorMessage}");
+            }
+            return View(model);  // Return the view with model so that errors can be displayed
+        }
+        if (ModelState.IsValid)
         {
 
             model.Product.CreatedAt = DateTime.Now;
 
-            foreach ( var allergyCode in model.SelectedAllergyCodes)
+            foreach (var allergyCode in model.SelectedAllergyCodes)
             {
                 var newAllergy = await _allergyRepsitory.GetById(allergyCode);
                 if (newAllergy != null)
@@ -126,10 +128,8 @@ public class ProductController : Controller
             }
 
             bool productCreated = await _productRepository.Create(model.Product);
-            Console.WriteLine("Creating product: " + model.Product.Name);
             if (productCreated)
             {
-                Console.WriteLine("Product saved!");
                 _logger.LogInformation("[ProductController] product created successfully for {@product}", model.Product);
                 return RedirectToAction("Index");
             }
@@ -144,28 +144,30 @@ public class ProductController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateNewAllergy(Allergy allergy) {
+    public async Task<IActionResult> CreateNewAllergy(Allergy allergy)
+    {
 
         if (ModelState.IsValid)
         {
             bool allergyCreated = await _allergyRepsitory.Create(allergy);
-            if (allergyCreated) 
+            if (allergyCreated)
             {
                 var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
 
                 // Our viewModel here is used to list all allergies in our select menu on the view
                 var createProductViewModel = new CreateProductViewModel
                 {
-                Product = new Product(),
-                AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem {
-                    Value = allergy.AllergyCode.ToString(),
-                    Text = allergy.Name
-                }).ToList()
-            };
+                    Product = new Product(),
+                    AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
+                    {
+                        Value = allergy.AllergyCode.ToString(),
+                        Text = allergy.Name
+                    }).ToList(),
+                };
 
-            return RedirectToAction("CreateProduct", createProductViewModel);
+                return RedirectToAction("CreateProduct", createProductViewModel);
             }
-                    
+
         }
         _logger.LogError("[AllergyController] category creation failed {@allergy}", allergy);
         return BadRequest("Allergy creation failed");
@@ -173,7 +175,8 @@ public class ProductController : Controller
 
     [HttpGet]
     [Authorize(Roles = "Admin, Business")]
-    public async Task<IActionResult> Update(int id) {
+    public async Task<IActionResult> Update(int id)
+    {
 
         // Find the specific product from id
         var product = await _productRepository.GetById(id); // uses repo method
@@ -184,17 +187,25 @@ public class ProductController : Controller
             _logger.LogError("[ProductController] product not found when updating the ProductId {ProductId:0000}", id);
             return BadRequest("Product not found for the ProductId");
         }
-        
+
         // Fetch all existing allergies
         var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
+        var categories = await _categoryRepository.GetAll();
 
         // Our viewModel here is used to list all allergies in our select menu on the view
         var updateProductViewModel = new CreateProductViewModel
         {
-            Product = new Product(),
-            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem {
+            Product = product,
+            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
+            {
                 Value = allergy.AllergyCode.ToString(),
                 Text = allergy.Name
+            }).ToList(),
+
+            CategorySelectList = categories.Select(cateorgy => new SelectListItem
+            {
+                Value = cateorgy.CategoryId.ToString(),
+                Text = cateorgy.Name
             }).ToList()
         };
 
@@ -203,36 +214,49 @@ public class ProductController : Controller
 
     [HttpPost]
     [Authorize(Roles = "Admin, Business")]
-    public async Task<IActionResult> Update(CreateProductViewModel model) 
+    public async Task<IActionResult> Update(CreateProductViewModel model)
     {
-        var product = model.Product;
         if (ModelState.IsValid)
         {
+            if (!ModelState.IsValid)
+        {
+            // Log all ModelState errors
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _logger.LogError($"ModelState Error: {error.ErrorMessage}");
+            }
+            return View(model);  // Return the view with model so that errors can be displayed
+        }
 
             model.Product.AllergyProducts.Clear(); // avoids duplicating allergyProducts
 
-            // This loop iterates through all allergy codes that have been selected from the allergy menu
-            // The selected allergies will be saved as an AllergyProduct
+            model.Product.CreatedAt = DateTime.Now;
+
             foreach (var allergyCode in model.SelectedAllergyCodes)
             {
-                product.AllergyProducts.Add(new AllergyProduct {
-                    AllergyCode = allergyCode,
-                    Product = product
-                });
+                var newAllergy = await _allergyRepsitory.GetById(allergyCode);
+                if (newAllergy != null)
+                {
+                    var newAllergyProduct = new AllergyProduct
+                    {
+                        AllergyCode = allergyCode,
+                        Allergy = newAllergy,
+                        ProductId = model.Product.ProductId,
+                        Product = model.Product
+                    };
+
+                    model.Product.AllergyProducts.Add(newAllergyProduct);
+                }
             }
 
             bool productUpdated = await _productRepository.Update(model.Product);
             if (productUpdated)
             {
-                _logger.LogInformation("[ProductController] product updated successfully for ProductId {ProductId:0000}", product.ProductId);
-                return RedirectToAction("Index"); // returns to index view
-            }
-            else
-            {
-                return BadRequest("Product creation failed");
+                _logger.LogInformation("[ProductController] product created successfully for {@product}", model.Product);
+                return RedirectToAction("Index");
             }
         }
-        return View(product);
+        return View(model);
     }
 
     [HttpGet]
@@ -262,4 +286,3 @@ public class ProductController : Controller
         return RedirectToAction(nameof(Index));
     }
 }
-   
