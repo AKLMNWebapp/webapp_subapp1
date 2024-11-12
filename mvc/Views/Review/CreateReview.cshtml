@@ -2,12 +2,12 @@
 
 <h2>Create New Review</h2>
 
-<form asp-action="CreateCategory">
+<form asp-action="CreateReview">
     <div class="form-group">
         <label asp-for="Comment"></label><span class="text-danger">*</span>
         <input asp-for="Comment" class="form-control" />
         <span asp-validation-for="Comment" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-outline-success">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to Categories</a>
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-secondary">Back to Product</a>
 </form>

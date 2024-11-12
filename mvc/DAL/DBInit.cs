@@ -200,7 +200,6 @@ public static class DBInit
                  {
                      UserId = user.Id,
                      ProductId = 1,
-                     Rating = 4.5m,
                      Comment = "Amazing",
                      CreatedAt = DateTime.UtcNow
                  },
@@ -208,7 +207,6 @@ public static class DBInit
                  {
                      UserId = user.Id,
                      ProductId = 1,
-                     Rating = 2.5m,
                      Comment = "Hmmmmm",
                      CreatedAt = DateTime.UtcNow
                  },
