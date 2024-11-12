@@ -13,7 +13,7 @@
         @if (Model.AllergyProducts != null)
         {
         var allergyProducts = string.Join(", ", Model.AllergyProducts.Select(ap => ap.Allergy.Name));
-        <p>@allergyProducts</p>
+        @allergyProducts
         }
     </p>
 </div>

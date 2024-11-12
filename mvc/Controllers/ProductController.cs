@@ -199,13 +199,15 @@ public class ProductController : Controller
             AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
             {
                 Value = allergy.AllergyCode.ToString(),
-                Text = allergy.Name
+                Text = allergy.Name,
+                Selected = product.AllergyProducts.Any(ap => ap.AllergyCode == allergy.AllergyCode)
             }).ToList(),
 
             CategorySelectList = categories.Select(cateorgy => new SelectListItem
             {
                 Value = cateorgy.CategoryId.ToString(),
-                Text = cateorgy.Name
+                Text = cateorgy.Name,
+                Selected = product.CategoryId == cateorgy.CategoryId
             }).ToList()
         };
 
