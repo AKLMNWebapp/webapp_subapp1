@@ -44,7 +44,7 @@ public class ProductController : Controller
         return View(productViewModel);
     }
 
-    public async Task<IActionResult> Details(int id)
+    public async Task<IActionResult> ProductDetails(int id)
     {
         var product = await _productRepository.GetById(id);
         if (product == null)
