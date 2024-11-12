@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace mvc.DAL.Models;
 
 public class Product
@@ -25,11 +26,15 @@ public class Product
     [StringLength(200)]
     public string? Description { get; set; } //kan disable nullable i .csproj hvis vi ønsker 
     public string? ImageUrl { get; set; }
+
+    [ForeignKey("User")]
     public string UserId { get; set; } = string.Empty;
-    public virtual ApplicationUser User { get; set; } = default!; //navigation property
+    public virtual ApplicationUser? User { get; set; } //navigation property
+
+    [ForeignKey("Category")]
     public int CategoryId { get; set; }
-    public virtual Category Category { get; set; } = default!; //navigation property
-    public DateTime? CreatedAt {get; set;}
-    public virtual List<AllergyProduct> AllergyProducts {get; set;} = default!; // navigation property
-    public virtual List<Review> Reviews {get; set;} = default!;
+    public virtual Category? Category { get; set; } //navigation property
+    public DateTime? CreatedAt {get; set;} = DateTime.Now;
+    public virtual List<AllergyProduct> AllergyProducts {get; set;} = new List<AllergyProduct>(); // navigation property
+    public virtual List<Review> Reviews {get; set;} = new List<Review>();
 }

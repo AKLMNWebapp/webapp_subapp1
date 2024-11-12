@@ -169,6 +169,12 @@ public static class DBInit
                      ImageUrl = "/images/milk.jpg",
                      UserId = businessUser.Id,
                      CategoryId = 1,
+                     AllergyProducts = new List<AllergyProduct>
+                     {
+                        new AllergyProduct {AllergyCode = 2, Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 2)},
+                        new AllergyProduct {AllergyCode = 3, Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 3)}
+
+                     }
                  }
              };
              await context.AddRangeAsync(products);

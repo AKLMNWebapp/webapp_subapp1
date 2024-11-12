@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using mvc.DAL.ViewModels;
 using mvc.DAL.Models;
@@ -15,18 +16,23 @@ public class ProductController : Controller
 {
     private readonly IRepository<Product> _productRepository;
     private readonly IRepository<Allergy> _allergyRepsitory;
+    private readonly IRepository<Category> _categoryRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly ILogger<ProductController> _logger;
 
-    public ProductController(IRepository<Product> productRepository, IRepository<Allergy> allergyRepsitory, ILogger<ProductController> logger)
+    public ProductController(IRepository<Product> productRepository, IRepository<Allergy> allergyRepsitory, IRepository<Category> categoryRepository, UserManager<ApplicationUser> userManager, ILogger<ProductController> logger)
     {
         _productRepository = productRepository; //initialize the db
         _allergyRepsitory = allergyRepsitory;
+        _categoryRepository = categoryRepository;
         _logger = logger;
+        _userManager = userManager;
     }
 
     public async Task<IActionResult> Index()
     {
         //retrieve all products from db
+        var allergies = await _allergyRepsitory.GetAll();
         var products = await _productRepository.GetAll();
         if (products == null)
         {
@@ -34,7 +40,7 @@ public class ProductController : Controller
             return NotFound("Product list not found");
         }
         //return the view with list of products
-        var productViewModel = new ProductViewModel(products, "Index");
+        var productViewModel = new ProductViewModel(products, "Index", allergies);
         return View(productViewModel);
     }
 
@@ -56,6 +62,7 @@ public class ProductController : Controller
     public async Task<IActionResult> CreateProduct() 
     {
         var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
+        var categories = await _categoryRepository.GetAll();
 
         // Our viewModel here is used to list all allergies in our select menu on the view
         var createProductViewModel = new CreateProductViewModel
@@ -64,6 +71,11 @@ public class ProductController : Controller
             AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem {
                 Value = allergy.AllergyCode.ToString(),
                 Text = allergy.Name
+            }).ToList(),
+
+            CategorySelectList = categories.Select(cateorgy => new SelectListItem {
+                Value = cateorgy.CategoryId.ToString(),
+                Text = cateorgy.Name
             }).ToList()
         };
 
@@ -74,8 +86,27 @@ public class ProductController : Controller
     [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId != null)
+            {
+                model.Product.UserId = userId;
+                var user = await _userManager.FindByIdAsync(userId);
+                model.Product.User = user;
+            }
+        if (!ModelState.IsValid)
+    {
+        // Log all ModelState errors
+        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        {
+            _logger.LogError($"ModelState Error: {error.ErrorMessage}");
+        }
+        return View(model);  // Return the view with model so that errors can be displayed
+    }
         if(ModelState.IsValid)
         {
+
+            model.Product.CreatedAt = DateTime.Now;
 
             foreach ( var allergyCode in model.SelectedAllergyCodes)
             {
@@ -103,7 +134,7 @@ public class ProductController : Controller
                 return RedirectToAction("Index");
             }
         }
-        return View(model);
+        return BadRequest("Product creation failed");
     }
 
     [HttpGet]

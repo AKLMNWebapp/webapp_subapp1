@@ -17,11 +17,21 @@
                 <div class="card-body">
                     <h5 class="card-title">@product.Name</h5>
                     <p class="card-text">
-                        <strong>Energy:</strong>@product.Energy<br>
-                        <strong>Fat:</strong>@product.Fat<br>
-                        <strong>Protein:</strong>@product.Protein<br>
-                        <strong>Carbohydrates:</strong>@product.Carbohydrates<br>
-                        <strong>Category:</strong>@product.Category.Name
+                        <strong>Energy: </strong>@product.Energy<br>
+                        <strong>Fat: </strong>@product.Fat<br>
+                        <strong>Protein: </strong>@product.Protein<br>
+                        <strong>Carbohydrates: </strong>@product.Carbohydrates<br>
+                        <strong>Category: </strong>@product.Category.Name<br>
+                        <strong>Allergies: </strong>
+                        @if (product.AllergyProducts != null)
+                        {
+                            <ul>
+                            @foreach (var allergyProduct in product.AllergyProducts)
+                            {
+                                <li>@allergyProduct.Allergy.Name</li>
+                            }
+                            </ul>
+                        }
                     </p>
                 </div>
                 <a asp-action="Review" asp-route-id="@product.ProductId" class="btn btn-warning">Add a review</a>
