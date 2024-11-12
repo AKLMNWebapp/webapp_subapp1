@@ -76,24 +76,22 @@ public class ProductController : Controller
     {
         if(ModelState.IsValid)
         {
-            if (!string.IsNullOrEmpty(model.NewAllergyName))
-            {
-                var newAllergy = new Allergy {Name = model.NewAllergyName};
-                bool allergyCreated = await _allergyRepsitory.Create(newAllergy);
-
-                if (allergyCreated)
-                {
-                    model.SelectedAllergyCodes.Add(newAllergy.AllergyCode);
-                }
-            }
-
 
             foreach ( var allergyCode in model.SelectedAllergyCodes)
             {
-                model.Product.AllergyProducts.Add(new AllergyProduct {
-                    AllergyCode = allergyCode,
-                    Product = model.Product
-                });
+                var newAllergy = await _allergyRepsitory.GetById(allergyCode);
+                if (newAllergy != null)
+                {
+                    var newAllergyProduct = new AllergyProduct
+                    {
+                        AllergyCode = allergyCode,
+                        Allergy = newAllergy,
+                        ProductId = model.Product.ProductId,
+                        Product = model.Product
+                    };
+
+                    model.Product.AllergyProducts.Add(newAllergyProduct);
+                }
             }
 
             bool productCreated = await _productRepository.Create(model.Product);
@@ -104,13 +102,42 @@ public class ProductController : Controller
                 _logger.LogInformation("[ProductController] product created successfully for {@product}", model.Product);
                 return RedirectToAction("Index");
             }
-            else
-            {
-                _logger.LogError("[ProductController] product creation failed for {@model}", model);
-                return BadRequest("Product creation failed");
-            }
         }
         return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult CreateNewAllergy()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateNewAllergy(Allergy allergy) {
+
+        if (ModelState.IsValid)
+        {
+            bool allergyCreated = await _allergyRepsitory.Create(allergy);
+            if (allergyCreated) 
+            {
+                var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
+
+                // Our viewModel here is used to list all allergies in our select menu on the view
+                var createProductViewModel = new CreateProductViewModel
+                {
+                Product = new Product(),
+                AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem {
+                    Value = allergy.AllergyCode.ToString(),
+                    Text = allergy.Name
+                }).ToList()
+            };
+
+            return RedirectToAction("CreateProduct", createProductViewModel);
+            }
+                    
+        }
+        _logger.LogError("[AllergyController] category creation failed {@allergy}", allergy);
+        return BadRequest("Allergy creation failed");
     }
 
     [HttpGet]
@@ -150,17 +177,6 @@ public class ProductController : Controller
         var product = model.Product;
         if (ModelState.IsValid)
         {
-
-            if (!string.IsNullOrEmpty(model.NewAllergyName))
-            {
-                var newAllergy = new Allergy {Name = model.NewAllergyName};
-                bool allergyUpdated = await _allergyRepsitory.Update(newAllergy);
-
-                if (allergyUpdated)
-                {
-                    model.SelectedAllergyCodes.Add(newAllergy.AllergyCode);
-                }
-            }
 
             model.Product.AllergyProducts.Clear(); // avoids duplicating allergyProducts
 
