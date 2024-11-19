@@ -1,0 +1,44 @@
+@model Collection
+@{
+    ViewData["Title"] = "Collection Details";
+}
+
+<h1>Collection: @Model.Name</h1>
+<p>Created at: @Model.CreatedAt</p>
+
+<h2>Products in this Collection</h2>
+<div class="container">
+    <div class="row">
+        @if (Model.Products.Any())
+        {
+            foreach (var product in Model.Products)
+            {
+                <div class="col-md-4 mb-4">
+                    <partial name="_productCard" model="product" />
+                    <a asp-controller="Product" asp-action="ProductDetails" asp-route-id="@product.ProductId" class="btn btn-info">Details</a>
+                    <a asp-controller="Product" asp-action="Review" asp-route-id="@product.ProductId" class="btn btn-warning">Add a Review</a>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No products have been added to this collection yet.</p>
+        }
+    </div>
+</div>
+
+<h3>Add a Product</h3>
+<form method="post" asp-action="AddProductToCollection">
+    <input type="hidden" name="collectionName" value="@Model.Name" />
+    <label for="productId">Select a Product:</label>
+    <select name="productId" id="productId" class="form-control">
+        @foreach (var product in ViewBag.Products)
+        {
+            <option value="@product.ProductId">@product.Name</option>
+        }
+    </select>
+    <button type="submit" class="btn btn-primary mt-2">Add to Collection</button>
+</form>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Collections</a>
+
