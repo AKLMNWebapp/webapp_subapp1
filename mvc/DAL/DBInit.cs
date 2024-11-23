@@ -88,6 +88,11 @@ public static class DBInit
         var businessUser = await userManager.FindByEmailAsync("business1@example.com");
         var user = await userManager.FindByEmailAsync("user@example.com");
 
+        if (adminUser == null || businessUser == null || user == null)
+        {
+            throw new InvalidOperationException("One or more required users are missing");
+        }
+
         // This method assures our different user roles are created when the application starts.
 
          if(!context.Allergies.Any())
@@ -171,9 +176,20 @@ public static class DBInit
                      CategoryId = 1,
                      AllergyProducts = new List<AllergyProduct>
                      {
-                        new AllergyProduct {AllergyCode = 2, Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 2)},
-                        new AllergyProduct {AllergyCode = 3, Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 3)}
-
+                        new AllergyProduct
+                        {
+                            AllergyCode = 2,
+                            Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 2)
+                            ?? throw new InvalidOperationException("Allergy with code 2 not found")
+                        },
+                        new AllergyProduct
+                        {
+                            AllergyCode = 3,
+                            Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 3)
+                            ?? throw new InvalidOperationException("Allergy with code 3 not found")
+                        }
+                        //new AllergyProduct {AllergyCode = 2, Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 2)},
+                        //new AllergyProduct {AllergyCode = 3, Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 3)}
                      }
                  }
              };
