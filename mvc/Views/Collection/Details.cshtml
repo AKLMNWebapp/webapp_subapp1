@@ -29,7 +29,7 @@
 
 <h3>Add a Product</h3>
 <form method="post" asp-action="AddProductToCollection">
-    <input type="hidden" name="collectionName" value="@Model.Name" />
+    <input type="hidden" name="collectionId" value="@Model.CollectionId" />
     <label for="productId">Select a Product:</label>
     <select name="productId" id="productId" class="form-control">
         @foreach (var product in ViewBag.Products)
@@ -41,4 +41,3 @@
 </form>
 
 <a asp-action="Index" class="btn btn-secondary">Back to Collections</a>
-
