@@ -45,14 +45,13 @@ public class CollectionController : Controller
     [Authorize(Roles = "Admin, Business, User")]
     public async Task<IActionResult> Create(Collection collection)
     {
-         // Retrieve the UserId from claims
+         // retrieve UserId 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (!string.IsNullOrEmpty(userId))
         {
             collection.UserId = userId;
 
-            // Attempt to retrieve the user from UserManager
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
@@ -60,7 +59,7 @@ public class CollectionController : Controller
             }
             else
             {
-                _logger.LogError("User with ID {UserId} not found in UserManager.", userId);
+                _logger.LogError("User with ID {UserId:0000} not found", userId);
                 ModelState.AddModelError("", "Unable to find the associated user.");
                 return View(collection);
             }
@@ -72,7 +71,7 @@ public class CollectionController : Controller
             return View(collection);
         }
 
-        // Create the collection
+        // create  collection
         bool returnOk = await _collectionRepository.Create(collection);
 
         if (returnOk)
@@ -80,7 +79,7 @@ public class CollectionController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // Log error if creation failed
+        // log error if creation failed
         _logger.LogError("[CollectionController] Collection creation failed {@collection}", collection);
         ModelState.AddModelError("", "Failed to create the collection. Please try again.");
         return View(collection);
