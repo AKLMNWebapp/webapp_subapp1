@@ -5,15 +5,15 @@
 <div class="row gx-5">
     <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid col-5" />
     <div class="col-7">
-        <a asp-action="Update" asp-route-id="@Model.ProductId" class="btn btn-warning">Edit</a>
-        <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-danger">Delete</a>
+        <a asp-action="Update" asp-route-id="@Model.ProductId" class="btn btn-warning mb-4">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-danger mb-4">Delete</a>
         <h3 class="pull-right">Product description</h3>
         <p>@Model.Description</p>
         <h3 class="pull-right">Nutritional values</h3>
-        <p><strong>Energy: </strong>@Model.Energy.ToString("0.00 kcal")</p>
-        <p><strong>Fat: </strong>@Model.Fat.ToString("0.00 g")</p>
-        <p><strong>Protein: </strong>@Model.Protein.ToString("0.00 g")</p>
-        <p><strong>Carbohydrates: </strong>@Model.Carbohydrates.ToString("0.00 g")</p>
+        <p><strong>Energy: </strong>@Model.Energy.ToString("0.## kcal")</p>
+        <p><strong>Fat: </strong>@Model.Fat.ToString("0.## g")</p>
+        <p><strong>Protein: </strong>@Model.Protein.ToString("0.## g")</p>
+        <p><strong>Carbohydrates: </strong>@Model.Carbohydrates.ToString("0.## g")</p>
         <p><strong>Category: </strong>@(Model.Category?.Name ?? "Not specificed")</p>
         
         <p><strong>Allergies: </strong>
@@ -30,5 +30,6 @@
         <p><strong>Created: </strong>@Model.CreatedAt</p>
     </div>
 </div>
- <p><a href="/Product/Index" class="btn btn-primary">Back to product list!</a></p>
- <a  asp-controller="Review" asp-action="CreateReview" asp-route-id="@Model.ProductId" class="btn btn-info">Create a review</a>
+
+<p class="mt-4"><a href="/Product/Index" class="btn btn-primary">Back to product list!</a></p>
+<a  asp-controller="Review" asp-action="CreateReview" asp-route-id="@Model.ProductId" class="btn btn-info">Create a review</a>
