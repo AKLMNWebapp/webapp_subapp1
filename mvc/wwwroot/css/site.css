@@ -77,12 +77,26 @@
   text-decoration: none;
   font-size: 1.2rem;
   padding: 10px 20px;
-  transition: background-color 0.3s;
+  position: relative;
 }
 
-.navbar a:hover {
-  background-color: #555;
-  border-radius: 5px;
+.navbar a::after {
+  content: ""; 
+  position: absolute;
+  bottom: 0; 
+  left: 0; 
+  width: 0;
+  height: 2px; 
+  background-color: green; 
+  transition: width 0.3s ease; 
+}
+
+.navbar a:hover::after {
+  width: 100%; 
+}
+
+.navbar a.active::after {
+  width: 100%; 
 }
 
 /* Page Content Wrapper */

@@ -137,17 +137,107 @@ public static class DBInit
                      ImageUrl = "/images/eggs.jpg",
                      UserId = businessUser.Id,
                      CategoryId = 1,
+                     AllergyProducts = new List<AllergyProduct>
+                     {
+                        new AllergyProduct
+                        {
+                            AllergyCode = 3,
+                            Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 3)
+                            ?? throw new InvalidOperationException("Allergy with code 3 not found"),
+                        }
+                     }
+                 },
+                 new Product
+                 {
+                     Name = "Banana",
+                     Energy = 2.0,
+                     Fat = 1.2,
+                     Carbohydrates = 3.2,
+                     Protein = 2.3,
+                     Description = "test",
+                     ImageUrl = "/images/bananas.jpeg",
+                     UserId = businessUser.Id,
+                     CategoryId = 4,
+                 },
+                 new Product
+                 {
+                     Name = "Asparagues",
+                     Energy = 2.0,
+                     Fat = 1.2,
+                     Carbohydrates = 3.2,
+                     Protein = 2.3,
+                     Description = "test",
+                     ImageUrl = "/images/asparagus.jpeg",
+                     UserId = businessUser.Id,
+                     CategoryId = 4,
+                 },
+                 new Product
+                 {
+                     Name = "Cheese",
+                     Energy = 2.0,
+                     Fat = 1.2,
+                     Carbohydrates = 3.2,
+                     Protein = 2.3,
+                     Description = "test",
+                     ImageUrl = "/images/cheese.jpg",
+                     UserId = businessUser.Id,
+                     CategoryId = 1,
+                     AllergyProducts = new List<AllergyProduct>
+                     {
+                        new AllergyProduct
+                        {
+                            AllergyCode = 2,
+                            Allergy = await context.Allergies.FirstOrDefaultAsync(a => a.AllergyCode == 2)
+                            ?? throw new InvalidOperationException("Allergy with code 2 not found"),
+                        }
+                     }
+                 },
+                 new Product
+                 {
+                     Name = "Vegan Cheese",
+                     Energy = 2.0,
+                     Fat = 1.2,
+                     Carbohydrates = 3.2,
+                     Protein = 2.3,
+                     Description = "test",
+                     ImageUrl = "/images/vegan_cheese.jpeg",
+                     UserId = businessUser.Id,
+                     CategoryId = 2,
+                 },
+                 new Product
+                 {
+                     Name = "Meat",
+                     Energy = 2.0,
+                     Fat = 1.2,
+                     Carbohydrates = 3.2,
+                     Protein = 2.3,
+                     Description = "test",
+                     ImageUrl = "/images/meat.jpeg",
+                     UserId = businessUser.Id,
+                     CategoryId = 3,
+                 },
+                 new Product
+                 {
+                     Name = "Chicken Breast",
+                     Energy = 2.0,
+                     Fat = 1.2,
+                     Carbohydrates = 3.2,
+                     Protein = 2.3,
+                     Description = "test",
+                     ImageUrl = "/images/chickenbreast.jpeg",
+                     UserId = businessUser.Id,
+                     CategoryId = 3,
                  },
 
                  new Product
                  {
-                     Name = "Vegan",
+                     Name = "Oatmilk",
                      Energy = 3,
                      Fat = 3,
                      Carbohydrates = 2.3,
                      Protein = 2,
                      Description = "test",
-                     ImageUrl = "/imagea/milk.jpg",
+                     ImageUrl = "/images/oatmilk.jpeg",
                      UserId = businessUser.Id,
                      CategoryId = 2,
                  },
@@ -159,7 +249,7 @@ public static class DBInit
                      Carbohydrates = 2.3,
                      Protein = 2,
                      Description = "test",
-                     ImageUrl = "/imagea/milk.jpg",
+                     ImageUrl = "/images/apple.jpeg",
                      UserId = businessUser.Id,
                      CategoryId = 4,
                  },
