@@ -249,6 +249,14 @@ public static class DBInit
                  Products = new List<Product>(),
                  CreatedAt = DateTime.Now
                  },
+                 new Collection
+                 {
+                 UserId = businessUser.Id,
+                 Name = "Chickennn",
+                 Products = new List<Product>(),
+                 CreatedAt = DateTime.Now
+                 },
+                 
              };
              await context.Collections.AddRangeAsync(collection);
              await context.SaveChangesAsync();

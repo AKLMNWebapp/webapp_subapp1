@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mvc.DAL.Models;
 using mvc.DAL.Repositories;
+using System.Security.Claims;
 
 namespace mvc.Controllers;
 
@@ -40,15 +42,47 @@ public class CollectionController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin, Business, User")]
     public async Task<IActionResult> Create(Collection collection)
     {
-        if (ModelState.IsValid)
+         // Retrieve the UserId from claims
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!string.IsNullOrEmpty(userId))
         {
-            bool returnOk = await _collectionRepository.Create(collection);
-            if (returnOk)
-                return RedirectToAction(nameof(Index));
+            collection.UserId = userId;
+
+            // Attempt to retrieve the user from UserManager
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                collection.User = user;
+            }
+            else
+            {
+                _logger.LogError("User with ID {UserId} not found in UserManager.", userId);
+                ModelState.AddModelError("", "Unable to find the associated user.");
+                return View(collection);
+            }
         }
-        _logger.LogError("[CollectionController] collection creation failed {@collection}", collection);
+        else
+        {
+            _logger.LogError("User ID is null or empty. Cannot create collection.");
+            ModelState.AddModelError("", "Unable to determine the UserId for the current user.");
+            return View(collection);
+        }
+
+        // Create the collection
+        bool returnOk = await _collectionRepository.Create(collection);
+
+        if (returnOk)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Log error if creation failed
+        _logger.LogError("[CollectionController] Collection creation failed {@collection}", collection);
+        ModelState.AddModelError("", "Failed to create the collection. Please try again.");
         return View(collection);
     }
 
