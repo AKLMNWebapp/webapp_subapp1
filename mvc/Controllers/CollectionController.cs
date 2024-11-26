@@ -36,6 +36,7 @@ public class CollectionController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Business, User")]
     public IActionResult Create()
     {
         return View();
@@ -119,6 +120,7 @@ public class CollectionController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin, Business, User")]
     public async Task<IActionResult> Delete(int id)
     {
         bool returnOk = await _collectionRepository.Delete(id);

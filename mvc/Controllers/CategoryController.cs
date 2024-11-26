@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mvc.DAL.Models;
@@ -43,12 +44,14 @@ public class CategoryController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Business")]
     public IActionResult CreateCategory() 
     {
         return View();
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> CreateCategory(Category category)
     {
         if (ModelState.IsValid)
@@ -62,6 +65,7 @@ public class CategoryController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> Update(int id) 
     {
         var category = await _categoryRepository.GetById(id);
@@ -74,6 +78,7 @@ public class CategoryController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> Update(Category category)
     {
         if (ModelState.IsValid)
@@ -88,6 +93,7 @@ public class CategoryController : Controller
 
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> Delete(int id)
     {
         //find category by id
@@ -101,6 +107,7 @@ public class CategoryController : Controller
     }
 
    [HttpPost]
+   [Authorize(Roles = "Admin, Business")]
    public async Task<IActionResult> DeleteConfirmation(int id)
    {
     //find category by id
