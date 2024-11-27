@@ -27,12 +27,14 @@ public class ReviewController : Controller
         _logger = logger;
     }
     
+    [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Index()
     {
         var reviews = await _reviewRepository.GetAll();
         if (reviews == null)
         {
-            _logger.LogError("[ReviewController] review lsit not found while executing GetAll()");
+            _logger.LogError("[ReviewController] review list not found while executing GetAll()");
             return NotFound();
         }
         return View(reviews);
@@ -44,21 +46,21 @@ public class ReviewController : Controller
         var product = await _productRepository.GetById(id);
         if (product == null)
         {
-            _logger.LogError("[ProductController] product not found for ProductId {ProductId:0000}", id);
+            _logger.LogError("[ReviewController] product not found for ProductId {ProductId:0000}", id);
             return BadRequest("Product not found for the ProductId");
         }
 
         var reviewRepository = _reviewRepository as ReviewRepository; // casting to get methods that are not in interface
         if (reviewRepository == null)
         {
-            _logger.LogError("[ProductController] Unable to cast _reviewRepository to ReviewRepository");
+            _logger.LogError("[ReviewController] Unable to cast _reviewRepository to ReviewRepository");
             return StatusCode(500, "Internal server error");
         }
        
        var reviews = await reviewRepository.GetAllByProductId(id);
        if ( reviews == null || !reviews.Any()) 
        {
-            _logger.LogError("[ProductController] Reviews not found for ProductId {ProductId:0000}", id);
+            _logger.LogError("[ReviewController] Reviews not found for ProductId {ProductId:0000}", id);
             return NotFound("Currently no reviews");
        }
 

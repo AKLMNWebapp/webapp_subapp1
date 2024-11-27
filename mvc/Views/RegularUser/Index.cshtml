@@ -1,0 +1,21 @@
+@model mvc.DAL.Models.ApplicationUser
+@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<div class="text-center mb-4">
+    <h1>@Model.Email</h1>
+    <p class="text-muted">
+        Welcome to the Business Dashboard, your central hub for managing and optimizing your business operations. 
+        This dashboard is designed to provide you with a comprehensive overview of your business services.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <a asp-controller="RegularUser" asp-action="ListCollections" asp-route-id="@Model.Id" class="btn btn-warning">Manage collections</a>
+            <a asp-controller="RegularUser" asp-action="ListReviews" asp-route-id="@Model.Id" class="btn btn-info">Manage reviews</a>
+        </div>
+    </div>
+</div>
