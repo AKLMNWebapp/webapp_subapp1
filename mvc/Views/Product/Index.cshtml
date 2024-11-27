@@ -22,7 +22,7 @@
             <div class="card">
                 <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
                 <partial name="_productCard" model="product" />
-                <a asp-action="Review" asp-route-id="@product.ProductId" class="btn btn-warning">Add a review</a>
+                <a asp-action="ListReviews" asp-route-id="@product.ProductId" class="btn btn-warning">Show reviews</a>
                 <a asp-action="ProductDetails" asp-route-id="@product.ProductId" class="btn btn-info">Details</a>
                 <a asp-action="Update" asp-route-id="@product.ProductId" class="btn btn-warning">Edit</a>
                 <a asp-action="Delete" asp-route-id="@product.ProductId" class="btn btn-danger">Delete</a>

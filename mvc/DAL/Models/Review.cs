@@ -6,15 +6,15 @@ public class Review
 {
     public int ReviewId {get; set;}
     public string UserId {get; set;} = string.Empty;
-    public virtual ApplicationUser User {get; set; } = default!; //navigation property
+    public virtual ApplicationUser? User {get; set; } //navigation property
     public int ProductId {get; set;}
-    public virtual Product Product {get; set;} = default!; //navigation property
+    public virtual Product? Product {get; set;} //navigation property
 
-   [StringLength(200)]
+   [StringLength(500)]
     public string? Comment {get; set;}
     public DateTime? CreatedAt {get; set;} = DateTime.Now;
 
-    [StringLength(200)]
+    [StringLength(500)]
     public string? Response {get; set;}
 
     public string? ResponseUserID {get; set;}

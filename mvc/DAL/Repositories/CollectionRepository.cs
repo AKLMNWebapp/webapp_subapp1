@@ -26,6 +26,21 @@ public class CollectionRepository : IRepository<Collection>
         }
     }
 
+    public async Task<IEnumerable<Collection>> GetAllByUserId(string userId)
+    {
+        try
+        {
+            return await _db.Collections
+            .Where(r => r.UserId == userId)
+            .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[CollectionRepository] ToListAsync() failed when GetAllByUserId() for UserId: {userId}, error message: {e}", e.Message);
+            return new List<Collection>();
+        }
+    }
+
     public async Task<Collection?> GetById(int id)
     {
         try

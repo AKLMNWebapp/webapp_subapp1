@@ -17,14 +17,19 @@ public class ProductController : Controller
     private readonly IRepository<Product> _productRepository;
     private readonly IRepository<Allergy> _allergyRepsitory;
     private readonly IRepository<Category> _categoryRepository;
+    private readonly IRepository<Review> _reviewRepository;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ILogger<ProductController> _logger;
 
-    public ProductController(IRepository<Product> productRepository, IRepository<Allergy> allergyRepsitory, IRepository<Category> categoryRepository, UserManager<ApplicationUser> userManager, ILogger<ProductController> logger)
+    public ProductController(IRepository<Product> productRepository, 
+    IRepository<Allergy> allergyRepsitory, IRepository<Category> categoryRepository,
+    IRepository<Review> reviewRepository, 
+    UserManager<ApplicationUser> userManager, ILogger<ProductController> logger)
     {
         _productRepository = productRepository; //initialize the db
         _allergyRepsitory = allergyRepsitory;
         _categoryRepository = categoryRepository;
+        _reviewRepository = reviewRepository;
         _logger = logger;
         _userManager = userManager;
     }
@@ -171,6 +176,94 @@ public class ProductController : Controller
         }
         _logger.LogError("[AllergyController] category creation failed {@allergy}", allergy);
         return BadRequest("Allergy creation failed");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Admin, User")]
+    public async Task<IActionResult> ListReviews(int id) {
+        var product = await _productRepository.GetById(id);
+        if (product == null)
+        {
+            _logger.LogError("[ProductController] product not found for ProductId {ProductId:0000}", id);
+            return BadRequest("Product not found for the ProductId");
+        }
+
+        var reviewRepository = _reviewRepository as ReviewRepository; // casting to get methods that are not in interface
+        if (reviewRepository == null)
+        {
+            _logger.LogError("[ProductController] Unable to cast _reviewRepository to ReviewRepository");
+            return StatusCode(500, "Internal server error");
+        }
+       
+       var reviews = await reviewRepository.GetAllByProductId(id);
+       if ( reviews == null || !reviews.Any()) 
+       {
+            _logger.LogError("[ProductController] Reviews not found for ProductId {ProductId:0000}", id);
+            return NotFound("Currently no reviews");
+       }
+
+       ViewBag.ProductId = id;
+       return View(reviews);
+    }
+    
+
+    [HttpGet]
+    [Authorize(Roles = "Admin, User")]
+    public async Task<IActionResult> CreateReview(int id)
+    {
+        var product = await _productRepository.GetById(id);
+        if (product == null)
+        {
+            _logger.LogError("[ProductController] product not found for ProductId {ProductId:0000}", id);
+            return NotFound("Product not found");
+        }
+        var review = new Review
+        {
+            ProductId = id
+        };
+        return View(review);
+    }
+
+   [HttpPost]
+   [Authorize(Roles = "Admin, User")]
+    public async Task<IActionResult> CreateReview(Review review)
+    {
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId != null )
+        {
+            review.UserId = userId;
+            var user = await _userManager.FindByIdAsync(userId);
+            
+            if (user != null) {
+                review.User = user;
+            }
+            else 
+            {
+                _logger.LogError("[ProductController] User not found for user {user}", user);
+                return NotFound("User not found");
+            }
+        } 
+        else return Unauthorized();
+
+        if (ModelState.IsValid)
+        {
+
+            bool returnOk = await _reviewRepository.Create(review);
+            if(returnOk)
+            {
+                int productId = review.ProductId;
+                _logger.LogInformation("[ReviewController] Review created successfully for ProductId {ProductId}", productId);
+                return RedirectToAction("ListReviews", new { id = productId });
+            }
+            else
+            {
+                _logger.LogError("[ProductController] Failed to create review for ProductId {ProductId:0000}", review.ProductId);
+                return BadRequest("Review creation failed");
+            }     
+        }
+        return View(review);
     }
 
     [HttpGet]

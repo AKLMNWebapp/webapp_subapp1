@@ -1,0 +1,29 @@
+@model Review
+
+@{
+    ViewData["Title"] = "Create Review";
+}
+
+<h2>Create Review</h2>
+
+<form asp-action="CreateReview" method="post">
+    <div class="form-group">
+        <label asp-for="Comment" class="control-label"></label>
+        <input asp-for="Comment" class="form-control" />
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="ProductId"/>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+<div>
+    <a asp-action="ListReviews" asp-route-id="@Model.ProductId">Back to Reviews</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -32,4 +32,5 @@
 </div>
 
 <p class="mt-4"><a href="/Product/Index" class="btn btn-primary">Back to product list!</a></p>
-<a  asp-controller="Review" asp-action="CreateReview" asp-route-id="@Model.ProductId" class="btn btn-info">Create a review</a>
+<a  asp-controller="Product" asp-action="CreateReview" asp-route-id="@Model.ProductId" class="btn btn-info">Create a review</a>
+<a  asp-controller="Product" asp-action="ListReviews" asp-route-id="@Model.ProductId" class="btn btn-info">Show Reviews form this product!</a>

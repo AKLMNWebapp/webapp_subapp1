@@ -26,7 +26,6 @@ public class UserRepository : IRepository<ApplicationUser>
             return new List<ApplicationUser>();
         }
     }
-
     public async Task<ApplicationUser?> GetById(int id)
     {
         try

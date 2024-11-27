@@ -23,7 +23,7 @@ public class Product
     [Range(0, double.MaxValue, ErrorMessage = "Protein must be a greater than 0.")]
         public double Protein { get; set; }
 
-    [StringLength(200)]
+    [StringLength(500)]
     public string? Description { get; set; } //kan disable nullable i .csproj hvis vi ønsker 
     public string? ImageUrl { get; set; }
 

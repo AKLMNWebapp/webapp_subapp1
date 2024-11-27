@@ -22,7 +22,37 @@ public class ReviewRepository : IRepository<Review>
         }
         catch (Exception e)
         {
-            _logger.LogError("[ReviewController] ToListAsync() failed when GetAll(), error message: {e}", e.Message);
+            _logger.LogError("[ReviewRepository] ToListAsync() failed when GetAll(), error message: {e}", e.Message);
+            return new List<Review>();
+        }
+    }
+
+    public async Task<IEnumerable<Review>> GetAllByProductId(int productId)
+    {
+        try
+        {
+            return await _db.Reviews
+            .Where(r => r.ProductId == productId)
+            .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[ReviewRepository] ToListAsync() failed when GetAllByProductId() for productId: {productId}, error message: {e}", e.Message);
+            return new List<Review>();
+        }
+    }
+
+    public async Task<IEnumerable<Review>> GetAllByUserId(string userId)
+    {
+        try
+        {
+            return await _db.Reviews
+            .Where(r => r.UserId == userId)
+            .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[ReviewRepository] ToListAsync() failed when GetAllByUserId() for UserId: {userId}, error message: {e}", e.Message);
             return new List<Review>();
         }
     }

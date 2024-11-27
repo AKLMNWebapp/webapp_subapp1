@@ -27,6 +27,21 @@ public class ProductRepository : IRepository<Product>
         }
     }
 
+    public async Task<IEnumerable<Product>> GetAllByUserId(string userId)
+    {
+        try
+        {
+            return await _db.Products
+            .Where(r => r.UserId == userId)
+            .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[ProductRepository] ToListAsync() failed when GetAllByUserId() for UserId: {userId}, error message: {e}", e.Message);
+            return new List<Product>();
+        }
+    }
+
     public async Task<Product?> GetById(int id)
     {
         try

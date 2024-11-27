@@ -1,0 +1,31 @@
+@model IEnumerable<Review>
+
+@{
+    ViewData["Title"] = "Reviews for Product";
+}
+
+<h2>Reviews for Product</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Comment</th>
+            <th>Response</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.User.UserName</td>
+                <td>@review.Comment</td>
+                <td>@review.Response</td>
+                <td>@review.CreatedAt?.ToString("g")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="CreateReview" asp-route-id="@ViewBag.ProductId" class="btn btn-primary">Add Review</a>
