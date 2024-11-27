@@ -66,40 +66,32 @@ public class ProductController : Controller
     // This Get request populates the Allergy section with already existing allergies in the database
     [HttpGet]
     [Authorize(Roles = "Admin, Business")]
-    public async Task<IActionResult> CreateProduct(CreateProductViewModel createProductViewModel = null)
+    public async Task<IActionResult> CreateProduct()
     {
-        if (createProductViewModel == null) 
-        {
-            createProductViewModel = new CreateProductViewModel
-            {
-                Product = new Product()
-            };
-        }
-        
         var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
         var categories = await _categoryRepository.GetAll();
 
-        // Our viewModel here is used to list all allergies in our select menu on the view
-        createProductViewModel.AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
-        {
-            Value = allergy.AllergyCode.ToString(),
-            Text = allergy.Name
-        }).ToList();
-
-        createProductViewModel.CategorySelectList = categories.Select(cateorgy => new SelectListItem
-        {
-            Value = cateorgy.CategoryId.ToString(),
-            Text = cateorgy.Name
-        }).ToList();
-
-        TempData["CreateProductViewModel"] = JsonConvert.SerializeObject(createProductViewModel);
+       var createProductViewModel = new CreateProductViewModel
+       {
+            Product = new Product(),
+            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
+            {
+                Value = allergy.AllergyCode.ToString(),
+                Text = allergy.Name
+            }).ToList(),
+            CategorySelectList = categories.Select(cateorgy => new SelectListItem
+            {
+                Value = cateorgy.CategoryId.ToString(),
+                Text = cateorgy.Name
+            }).ToList()
+        };
 
         return View(createProductViewModel);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin, Business")]
-    public async Task<IActionResult> CreateProductPost(CreateProductViewModel model)
+    public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

@@ -70,20 +70,62 @@ public class AllergyController : Controller
         return View(allergy);
     }
 
+
+    [HttpGet]
+    public async Task<IActionResult> CreateNewAllergyUpdate(int id)
+    {
+        var product = await _productRepository.GetById(id);
+
+        // product not found
+        if (product == null)
+        {
+            _logger.LogError("[ProductController] product not found when updating the ProductId {ProductId:0000}", id);
+            return BadRequest("Product not found for the ProductId");
+        }
+
+        var updateProductViewModel = new UpdateProductViewModel
+        {
+            Product = product
+        };
+        
+
+        return View(updateProductViewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateNewAllergyUpdate(UpdateProductViewModel updateProductViewModel)
+    {
+
+        if (ModelState.IsValid)
+        {
+            bool allergyCreated = await _allergyRepository.Create(updateProductViewModel.Allergy);
+            if (allergyCreated)
+            {
+                var allergies = await _allergyRepository.GetAll(); // gets list of all available allergies
+
+                // Our viewModel here is used to list all allergies in our select menu on the view
+                /*var productViewModel = new CreateProductViewModel
+                {
+                    Product = new Product(),
+                    AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
+                    {
+                        Value = allergy.AllergyCode.ToString(),
+                        Text = allergy.Name
+                    }).ToList(),
+                };*/
+
+                return RedirectToAction("Update", "Product", new {id = updateProductViewModel.Product.ProductId});
+            }
+
+        }
+        _logger.LogError("[AllergyController] category creation failed {@allergy}", updateProductViewModel.Allergy);
+        return BadRequest("Allergy creation failed");
+    }
+
     [HttpGet]
     public IActionResult CreateNewAllergy()
     {
-        // Retrieve the CreateProductViewModel from TempData
-        var createProductViewModel = TempData["CreateProductViewModel"] as CreateProductViewModel;
-
-        if (createProductViewModel == null)
-        {
-            // If the model was not found in TempData, you can handle this case (e.g., redirect to a different action).
-            return RedirectToAction("CreateProduct", "Product", createProductViewModel);
-        }
-
-        // Pass the model to the view
-        return View(createProductViewModel);
+        return View();
     }
 
     [HttpPost]
@@ -98,35 +140,21 @@ public class AllergyController : Controller
                 var allergies = await _allergyRepository.GetAll(); // gets list of all available allergies
 
                 // Our viewModel here is used to list all allergies in our select menu on the view
-                // we use TempData to get back to the same product we were making
-
-                if (TempData["CreateProductViewModel"] is string createProductViewModelJson)
+                var createProductViewModel = new CreateProductViewModel
                 {
-                    var createProductViewModel = JsonConvert.DeserializeObject<CreateProductViewModel>(createProductViewModelJson);
-                    createProductViewModel.AllergyMultiSelectList = allergies.Select(a => new SelectListItem
+                    Product = new Product(),
+                    AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
                     {
-                        Value = a.AllergyCode.ToString(),
-                        Text = a.Name
-                    }).ToList();
+                        Value = allergy.AllergyCode.ToString(),
+                        Text = allergy.Name
+                    }).ToList(),
+                };
 
-                    return RedirectToAction("CreateProduct", "Product", createProductViewModel);
-                }
-                else {
-                    return BadRequest("Test failed");
-                }
+                return RedirectToAction("CreateProduct", "Product", createProductViewModel);
             }
-            else return BadRequest("allergyCreated false");
 
         }
-        else
-    {
-        // Log the errors in the ModelState
-        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-        {
-            _logger.LogError("ModelState Error: {ErrorMessage}", error.ErrorMessage);
-        }
-    }
-        _logger.LogError("[AllergyController] allergy creation failed {@allergy}", allergy);
+        _logger.LogError("[AllergyController] category creation failed {@allergy}", allergy);
         return BadRequest("Allergy creation failed");
     }
 
