@@ -5,7 +5,7 @@
 
 <h1>Create New Product</h1>
 
-<form asp-action="CreateProduct" method="post">
+<form asp-action="CreateProductPost" method="post">
     <div class="form-group">
         <label asp-for="Product.Name" class="control-label"></label>
         <input asp-for="Product.Name" class="form-control" />
@@ -57,7 +57,7 @@
 
     <div class="form-group">
         <label>Didn't find allergy?</label>
-        <a asp-action="CreateNewAllergy" class="btn btn-secondary">Back to products view</a>
+        <a asp-controller="Allergy" asp-action="CreateNewAllergy" class="btn btn-secondary">Back to products view</a>
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>

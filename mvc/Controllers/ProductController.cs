@@ -9,6 +9,8 @@ using System.Security.Claims;
 using mvc.DAL.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace mvc.Controllers;
 
@@ -64,34 +66,40 @@ public class ProductController : Controller
     // This Get request populates the Allergy section with already existing allergies in the database
     [HttpGet]
     [Authorize(Roles = "Admin, Business")]
-    public async Task<IActionResult> CreateProduct()
+    public async Task<IActionResult> CreateProduct(CreateProductViewModel createProductViewModel = null)
     {
+        if (createProductViewModel == null) 
+        {
+            createProductViewModel = new CreateProductViewModel
+            {
+                Product = new Product()
+            };
+        }
+        
         var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
         var categories = await _categoryRepository.GetAll();
 
         // Our viewModel here is used to list all allergies in our select menu on the view
-        var createProductViewModel = new CreateProductViewModel
+        createProductViewModel.AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
         {
-            Product = new Product(),
-            AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
-            {
-                Value = allergy.AllergyCode.ToString(),
-                Text = allergy.Name
-            }).ToList(),
+            Value = allergy.AllergyCode.ToString(),
+            Text = allergy.Name
+        }).ToList();
 
-            CategorySelectList = categories.Select(cateorgy => new SelectListItem
-            {
-                Value = cateorgy.CategoryId.ToString(),
-                Text = cateorgy.Name
-            }).ToList()
-        };
+        createProductViewModel.CategorySelectList = categories.Select(cateorgy => new SelectListItem
+        {
+            Value = cateorgy.CategoryId.ToString(),
+            Text = cateorgy.Name
+        }).ToList();
+
+        TempData["CreateProductViewModel"] = JsonConvert.SerializeObject(createProductViewModel);
 
         return View(createProductViewModel);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin, Business")]
-    public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
+    public async Task<IActionResult> CreateProductPost(CreateProductViewModel model)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -142,130 +150,7 @@ public class ProductController : Controller
         return BadRequest("Product creation failed");
     }
 
-    [HttpGet]
-    public IActionResult CreateNewAllergy()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateNewAllergy(Allergy allergy)
-    {
-
-        if (ModelState.IsValid)
-        {
-            bool allergyCreated = await _allergyRepsitory.Create(allergy);
-            if (allergyCreated)
-            {
-                var allergies = await _allergyRepsitory.GetAll(); // gets list of all available allergies
-
-                // Our viewModel here is used to list all allergies in our select menu on the view
-                var createProductViewModel = new CreateProductViewModel
-                {
-                    Product = new Product(),
-                    AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
-                    {
-                        Value = allergy.AllergyCode.ToString(),
-                        Text = allergy.Name
-                    }).ToList(),
-                };
-
-                return RedirectToAction("CreateProduct", createProductViewModel);
-            }
-
-        }
-        _logger.LogError("[AllergyController] category creation failed {@allergy}", allergy);
-        return BadRequest("Allergy creation failed");
-    }
-
-    [HttpGet]
-    [Authorize(Roles = "Admin, User")]
-    public async Task<IActionResult> ListReviews(int id) {
-        var product = await _productRepository.GetById(id);
-        if (product == null)
-        {
-            _logger.LogError("[ProductController] product not found for ProductId {ProductId:0000}", id);
-            return BadRequest("Product not found for the ProductId");
-        }
-
-        var reviewRepository = _reviewRepository as ReviewRepository; // casting to get methods that are not in interface
-        if (reviewRepository == null)
-        {
-            _logger.LogError("[ProductController] Unable to cast _reviewRepository to ReviewRepository");
-            return StatusCode(500, "Internal server error");
-        }
-       
-       var reviews = await reviewRepository.GetAllByProductId(id);
-       if ( reviews == null || !reviews.Any()) 
-       {
-            _logger.LogError("[ProductController] Reviews not found for ProductId {ProductId:0000}", id);
-            return NotFound("Currently no reviews");
-       }
-
-       ViewBag.ProductId = id;
-       return View(reviews);
-    }
-    
-
-    [HttpGet]
-    [Authorize(Roles = "Admin, User")]
-    public async Task<IActionResult> CreateReview(int id)
-    {
-        var product = await _productRepository.GetById(id);
-        if (product == null)
-        {
-            _logger.LogError("[ProductController] product not found for ProductId {ProductId:0000}", id);
-            return NotFound("Product not found");
-        }
-        var review = new Review
-        {
-            ProductId = id
-        };
-        return View(review);
-    }
-
-   [HttpPost]
-   [Authorize(Roles = "Admin, User")]
-    public async Task<IActionResult> CreateReview(Review review)
-    {
-
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        if (userId != null )
-        {
-            review.UserId = userId;
-            var user = await _userManager.FindByIdAsync(userId);
-            
-            if (user != null) {
-                review.User = user;
-            }
-            else 
-            {
-                _logger.LogError("[ProductController] User not found for user {user}", user);
-                return NotFound("User not found");
-            }
-        } 
-        else return Unauthorized();
-
-        if (ModelState.IsValid)
-        {
-
-            bool returnOk = await _reviewRepository.Create(review);
-            if(returnOk)
-            {
-                int productId = review.ProductId;
-                _logger.LogInformation("[ReviewController] Review created successfully for ProductId {ProductId}", productId);
-                return RedirectToAction("ListReviews", new { id = productId });
-            }
-            else
-            {
-                _logger.LogError("[ProductController] Failed to create review for ProductId {ProductId:0000}", review.ProductId);
-                return BadRequest("Review creation failed");
-            }     
-        }
-        return View(review);
-    }
-
+   
     [HttpGet]
     [Authorize(Roles = "Admin, Business")]
     public async Task<IActionResult> Update(int id)

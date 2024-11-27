@@ -1,0 +1,22 @@
+@model Allergy
+@using mvc.DAL.ViewModels
+@using Newtonsoft.Json
+@{
+    var createProductViewModel = TempData["CreateProductViewModel"] as CreateProductViewModel;
+}    
+
+<h2>Create New Allergy</h2>
+
+<form asp-action="CreateNewAllergy" method="post">
+    @if (createProductViewModel != null)
+    {
+        <input type="hidden" name="CreateProductViewModel" value="@JsonConvert.SerializeObject(createProductViewModel)" />
+    }
+    <div class="form-group">
+        <label asp-for="Name"></label><span class="text-danger">*</span>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-outline-success">Create</button>
+    <a asp-controller="Product" asp-action="CreateProduct" class="btn btn-secondary">Back to Create Product</a>
+</form>
