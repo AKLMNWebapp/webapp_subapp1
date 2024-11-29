@@ -1,0 +1,46 @@
+@model IEnumerable<Review>
+
+@{
+    ViewData["Title"] = "Your reviews";
+}
+
+<div class="text-center mb-4"> 
+    <h1>Collection</h1>
+    <p class="text-muted">
+        Welcome to your reviews! Here, you can manage what reviews you have left.
+    </p>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Response</th>
+                <th>Created At</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model)
+            {
+                <tr>
+                    <td>@review.Product.Name</td>
+                    <td>@review.User.UserName</td>
+                    <td>@review.Comment</td>
+                    <td>@review.Response</td>
+                    <td>@review.CreatedAt?.ToString("g")</td>
+                    <td><a asp-controller="Review" asp-action="Delete" asp-route-id="@review.ReviewId" class="btn btn-danger">Delete review</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>you haven't created any Reviews!</p>
+
+}

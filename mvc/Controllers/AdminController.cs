@@ -57,6 +57,19 @@ public class AdminController : Controller
     public async Task<IActionResult> ListUsers()
     {
         var users = await _userManager.Users.ToListAsync();
-        return View(users);
+        var listUsersViewList = new List<ListUsersViewModel>();
+
+        foreach(var user in users)
+        {
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            listUsersViewList.Add(new ListUsersViewModel
+            {
+                user = user,
+                Role = role 
+            });
+        }
+        return View(listUsersViewList);
     }
+
+    
 }

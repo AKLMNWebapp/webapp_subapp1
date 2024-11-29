@@ -1,0 +1,41 @@
+@model IEnumerable<mvc.DAL.ViewModels.ListUsersViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+
+<div class="text-center mb-4"> 
+    <h1>Users</h1>
+    <p class="text-muted">
+        Welcome to User dashboard Here, you can manage all users!
+    </p>
+</div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User mail</th>
+                <th>Role</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var appUser in Model)
+            {
+                <tr>
+                    <td>@appUser.user.Email</td>
+                    <td>@appUser.Role</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No Users have been registered</p>
+
+        }
+</tbody>
+</table>

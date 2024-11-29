@@ -13,7 +13,9 @@
     </p>
 </div>
 
-<div class="row">
+@if (Model != null && Model.Any())
+{
+    <div class="row">
     @foreach (var collection in Model)
     {
         <div class="col-md-4 mb-3">
@@ -31,6 +33,12 @@
             </div>
         </div>
     }
-</div>
+    </div>
+    <a asp-controller="Collection" asp-action="Create" class="btn btn-info">Create new Collection</a>
+}
+else
+{
+    <p>you havent created any collections!</p>
+    <a asp-controller="Collection" asp-action="Create" class="btn btn-info">Create new Collection</a>
 
-<a asp-action="Create" class="btn btn-info">Create new Collection</a>
+}

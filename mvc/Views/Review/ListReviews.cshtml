@@ -1,31 +1,81 @@
+@using Microsoft.AspNetCore.Identity
 @model IEnumerable<Review>
 
 @{
-    ViewData["Title"] = "Reviews for Product";
+    ViewData["Title"] = "Reviews for product";
 }
 
-<h2>Reviews for Product</h2>
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Comment</th>
-            <th>Response</th>
-            <th>Created At</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var review in Model)
-        {
+<div class="text-center mb-4"> 
+    <h1>Collection</h1>
+    <p class="text-muted">
+        Welcome to your reviews! Here, you can manage what reviews you have left.
+    </p>
+</div>
+
+    <table class="table">
+        <thead>
             <tr>
-                <td>@review.User.UserName</td>
-                <td>@review.Comment</td>
-                <td>@review.Response</td>
-                <td>@review.CreatedAt?.ToString("g")</td>
+                <th>Product</th>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Response</th>
+                <th>Created At</th>
+                <th></th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var review in Model)
+            {
+                <tr>
+                    <td>@review.Product.Name</td>
+                    <td>@review.User.UserName</td>
+                    <td>@review.Comment</td>
+                    <td>@review.Response</td>
+                    <td>@review.CreatedAt?.ToString("g")</td>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var user = await UserManager.GetUserAsync(User);
 
-<a asp-action="CreateReview" asp-route-id="@ViewBag.ProductId" class="btn btn-primary">Add Review</a>
+                        @if (user != null && await UserManager.IsInRoleAsync(user, "Business") && (user == review.Product.User))
+                        {
+                            <td><a asp-controller="Review" asp-action="Respond" asp-route-id="@review.ReviewId"
+                                    class="btn btn-primary">Respond</a></td>
+                            <td><a asp-controller="Review" asp-action="DeleteResponse" asp-route-id="@review.ReviewId"
+                                    class="btn btn-danger">Delete response</a></td>
+                        }
+
+                        @if (user != null && await UserManager.IsInRoleAsync(user, "RegularUser") && (user == review.User))
+                        {
+                            <td><a asp-controller="Review" asp-action="Update" asp-route-id="@review.ReviewId"
+                                    class="btn btn-danger">Update review</a></td>
+                            <td><a asp-controller="Review" asp-action="Delete" asp-route-id="@review.ReviewId"
+                                    class="btn btn-danger">Delete review</a></td>
+                        }
+
+                        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+                        {
+                            <td><a asp-controller="Review" asp-action="Respond" asp-route-id="@review.ReviewId"
+                                    class="btn btn-primary">Respond</a></td>
+                            <td><a asp-controller="Review" asp-action="Delete" asp-route-id="@review.ReviewId"
+                                    class="btn btn-danger">Delete review</a>
+                                <a asp-controller="Review" asp-action="DeleteResponse" asp-route-id="@review.ReviewId"
+                                    class="btn btn-danger">Delete response</a>
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No reviews have been created form this product</p>
+
+        }
+</tbody>
+</table>

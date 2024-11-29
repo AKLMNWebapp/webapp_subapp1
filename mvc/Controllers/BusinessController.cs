@@ -20,29 +20,28 @@ public class BusinessController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IRepository<Product> _productRepository;
-    private readonly IRepository<Review> _reviewRepository;
     private readonly ILogger<CategoryController> _logger;
-    public BusinessController (UserManager<ApplicationUser> userManager, IRepository<Product> productRepository, IRepository<Review> reviewRepository, ILogger<CategoryController> logger)
+    public BusinessController (UserManager<ApplicationUser> userManager, IRepository<Product> productRepository, ILogger<CategoryController> logger)
     {
         _userManager = userManager;
         _productRepository = productRepository;
-        _reviewRepository = reviewRepository;
         _logger = logger;
-    }
-    
-    public async Task<IActionResult> Index(string id)
-    {
-        var user =  await _userManager.FindByIdAsync(id);
-        return View(user);
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListProducts(string id)
+    public async Task<IActionResult> Index(string id)
     {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            _logger.LogError("[BusinessController] User not found while executing FindByIdAsync() for UserID {UserId}", id);
+            return NotFound("User not found");
+        }
+
         var productRepository = _productRepository as ProductRepository; // casting to get methods that are not in interface
         if (productRepository == null)
         {
-            _logger.LogError("[ProductController] Unable to cast _reviewRepository to ReviewRepository");
+            _logger.LogError("[BusinessController] Unable to cast _productRepository to ProductRepository");
             return StatusCode(500, "Internal server error");
         }
 
@@ -50,29 +49,11 @@ public class BusinessController : Controller
         if(products == null)
         {
             _logger.LogError("[BusinessController] products not found for UserId {UserId:0000}", id);
-            return NotFound("Currently no products");
-       }
-
-       return View(products);
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> ListReviews(string id)
-    {
-        var reviewRepository = _reviewRepository as ReviewRepository; // casting to get methods that are not in interface
-        if (reviewRepository == null)
-        {
-            _logger.LogError("[ProductController] Unable to cast _reviewRepository to ReviewRepository");
-            return StatusCode(500, "Internal server error");
+            products = new List<Product>();
         }
 
-        var reviews = await reviewRepository.GetAllByUserId(id);
-        if (reviews == null)
-        {
-            _logger.LogError("[BusinessController] reviews not found for UserId {UserId:0000}", id);
-            return NotFound("Currently no Reviews");
-        }
+        var businessProductViewModel = new BusinessProductViewModel(products, "ListProducts", user);
 
-        return View(reviews);
+       return View(businessProductViewModel);
     }
 }

@@ -35,19 +35,18 @@ public class ReviewController : Controller
         if (reviews == null)
         {
             _logger.LogError("[ReviewController] review list not found while executing GetAll()");
-            return NotFound();
+            reviews = new List<Review>();
         }
         return View(reviews);
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin, User")]
     public async Task<IActionResult> ListReviews(int id) {
         var product = await _productRepository.GetById(id);
         if (product == null)
         {
             _logger.LogError("[ReviewController] product not found for ProductId {ProductId:0000}", id);
-            return BadRequest("Product not found for the ProductId");
+            return NotFound();
         }
 
         var reviewRepository = _reviewRepository as ReviewRepository; // casting to get methods that are not in interface
@@ -61,7 +60,7 @@ public class ReviewController : Controller
        if ( reviews == null || !reviews.Any()) 
        {
             _logger.LogError("[ReviewController] Reviews not found for ProductId {ProductId:0000}", id);
-            return NotFound("Currently no reviews");
+            reviews = new List<Review>(); // sends an empty list if no reviews
        }
 
        ViewBag.ProductId = id;
@@ -156,7 +155,7 @@ public class ReviewController : Controller
         return View(review);
     }
 
-    [HttpPost]
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         var review = await _reviewRepository.GetById(id);
@@ -173,12 +172,13 @@ public class ReviewController : Controller
     {
         var review = await _reviewRepository.GetById(id);
         if (review == null) return NotFound();
-
+        string userId = review.UserId;
         var success = await _reviewRepository.Delete(id);
         if (success)
         {
+            int productId = review.ProductId;
             _logger.LogInformation("[ReviewController] Successfully deleted review with ReviewId {ReviewId}", id);
-            return RedirectToAction("Details", "Product", new { id = review.ProductId });
+            return RedirectToAction("ListReviews", new {id = productId});
         }
         else
         {
@@ -219,8 +219,9 @@ public class ReviewController : Controller
         var success = await _reviewRepository.Update(review);
         if (success)
         {
+            int productId = review.ProductId;
             _logger.LogInformation("[ReviewController] Successfully added review response to review with ReviewId {ReviewId}", review.ReviewId);
-            return RedirectToAction("Index");
+            return RedirectToAction("ListReviews", new {id = productId});
         }
         else
         {
@@ -228,5 +229,44 @@ public class ReviewController : Controller
             return BadRequest("Failed to add response");
         }
 
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DeleteResponse(int id)
+    {
+        var review = await _reviewRepository.GetById(id);
+        if (review == null)
+        {
+            _logger.LogError("[ReviewController] review not found for ReviewId {ReviewId:0000}", id);
+            return BadRequest("Review not found for the ReviewId");
+        }
+
+        return View(review);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteResponseConfirm(int id)
+    {
+        var review = await _reviewRepository.GetById(id);
+        if (review == null)
+        {
+            _logger.LogError("[ReviewController] review not found for ReviewId {ReviewId:0000}", id);
+            return BadRequest("Review not found for the ReviewId");
+        }
+
+        review.Response = "";
+
+        var success = await _reviewRepository.Update(review);
+        if (success)
+        {
+            int productId = review.ProductId;
+            _logger.LogInformation("[ReviewController] Successfully deleted review response to review with ReviewId {ReviewId}", review.ReviewId);
+            return RedirectToAction("ListReviews", new {id = productId});
+        }
+        else
+        {
+            _logger.LogError("[ReviewController] Failed to delete response to review with ReviewId {ReviewId:0000}", id);
+            return BadRequest("Failed to delete response");
+        }
     }
 }

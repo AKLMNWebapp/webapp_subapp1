@@ -18,7 +18,6 @@
                     <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" />
                     <partial name="_productCard" model="product" />
                     <a href="@Url.Action("ProductDetails", "Product", new { id = product.ProductId })" class="btn btn-primary">View Product</a>
-                    <a href="@Url.Action("Delete", "Product", new { id = product.ProductId })" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         }

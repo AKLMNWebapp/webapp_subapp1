@@ -24,15 +24,23 @@ public class CollectionController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string id)
     {
-        var collections = await _collectionRepository.GetAll();
+        var collectionRepository = _collectionRepository as CollectionRepository; // casting to get methods that are not in interface
+        if (collectionRepository == null)
+        {
+            _logger.LogError("[UserController] Unable to cast _CollectionRepository to collectionRepository");
+            return StatusCode(500, "Internal server error");
+        }
+
+        var collections = await collectionRepository.GetAllByUserId(id);
         if(collections == null)
         {
-            _logger.LogError("[CollectionController] collection list not found while executing GetAll()");
-            return NotFound("Collection list not found");
-        }
-        return View(collections);
+            _logger.LogError("[BusinessController] products not found for UserId {UserId:0000}", id);
+            collections = new List<Collection>();
+       }
+
+       return View(collections);
     }
 
     [HttpGet]
