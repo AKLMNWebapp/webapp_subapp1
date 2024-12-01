@@ -6,16 +6,20 @@
 <div class="text-center mb-4">
     <h1>@Model.Email</h1>
     <p class="text-muted">
-        Welcome to the Business Dashboard, your central hub for managing and optimizing your business operations. 
-        This dashboard is designed to provide you with a comprehensive overview of your business services.
+        Welcome to the User Dashboard!
+        Your personalized space for managing your collection and reviews, exploring products, and staying updated. 
+        From here, you can access your favorite collections, track reviews and responses.
     </p>
 </div>
 
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <a asp-controller="Collection" asp-action="Index" asp-route-id="@Model.Id" class="btn btn-warning">Manage collections</a>
+<div class="d-flex flex-column align-items-center">
+    <div class="row">
+        <div class="d-flex justify-content-center flex-column align-items-center p-3">
+            <a asp-controller="Collection" asp-action="Index" asp-route-id="@Model.Id" class="btn btn-warning mb-2">Manage collections</a>
             <a asp-controller="RegularUser" asp-action="ListReviews" asp-route-id="@Model.Id" class="btn btn-info">Manage reviews</a>
         </div>
     </div>
 </div>
+
+
+

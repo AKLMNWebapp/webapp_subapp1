@@ -16,7 +16,7 @@
                 <div class="col-md-4 mb-4">
                     <partial name="_productCard" model="product" />
                     <a asp-controller="Product" asp-action="ProductDetails" asp-route-id="@product.ProductId" class="btn btn-info">Details</a>
-                    <a asp-controller="Product" asp-action="Review" asp-route-id="@product.ProductId" class="btn btn-warning">Add a Review</a>
+                    <a asp-controller="Review" asp-action="CreateReview" asp-route-id="@product.ProductId" class="btn btn-warning">Add a Review</a>
                 </div>
             }
         }
@@ -40,4 +40,4 @@
     <button type="submit" class="btn btn-primary mt-2">Add to Collection</button>
 </form>
 
-<a asp-action="Index" class="btn btn-secondary">Back to Collections</a>
+<a asp-action="Index" asp-route-id="@Model.UserId" class="btn btn-secondary">Back to Collections</a>
