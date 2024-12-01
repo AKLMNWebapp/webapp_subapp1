@@ -1,0 +1,46 @@
+@model IEnumerable<mvc.DAL.Models.Review>
+
+@{
+    ViewData["Title"] = "Manage Reviews";
+}
+
+<h1>Manage Reviews</h1>
+
+@if (!Model.Any())
+{
+    <p>No reviews found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Response</th>
+                <th>Created At</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model)
+            {
+                <tr>
+                    <td>@review.Product?.Name</td>
+                    <td>@review.User?.UserName</td>
+                    <td>@review.Comment</td>
+                    <td>@review.Response</td>
+                    <td>@review.CreatedAt?.ToString("g")</td>
+                    <td>
+                        <a asp-controller="Review" asp-action="Delete" asp-route-id="@review.ReviewId" class="btn btn-danger">Delete review</a>
+                    </td>
+                    <td>
+                        <a asp-controller="Review" asp-action="DeleteResponse" asp-route-id="@review.ReviewId" class="btn btn-danger">Delete response</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

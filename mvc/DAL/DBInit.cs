@@ -332,9 +332,16 @@ public static class DBInit
                  {
                      UserId = user.Id,
                      ProductId = 1,
-                     Comment = "Hmmmmm",
+                     Comment = "Good quality",
                      CreatedAt = DateTime.UtcNow
                  },
+                 new Review
+                 {
+                     UserId = user.Id,
+                     ProductId = 3,
+                     Comment = "Not the best",
+                     CreatedAt = DateTime.UtcNow
+                 }
              };
              await context.AddRangeAsync(review);
             await context.SaveChangesAsync();
