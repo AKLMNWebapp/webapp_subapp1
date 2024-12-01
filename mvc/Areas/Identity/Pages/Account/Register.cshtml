@@ -21,7 +21,7 @@
             <!-- #Role selection >-->
             <div class="form-floating mb-3">
                 <select asp-for="Input.Role" class="form-control">
-                    @foreach (var role in (List<string>)ViewData["Roles"])
+                    @foreach (var role in (ViewData["Roles"] as List<string> ?? new List<string>()))
                     {
                         <option value="@role">@role</option>
                     }

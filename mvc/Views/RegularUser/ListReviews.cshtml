@@ -28,8 +28,8 @@
             @foreach (var review in Model)
             {
                 <tr>
-                    <td>@review.Product.Name</td>
-                    <td>@review.User.UserName</td>
+                    <td>@(review.Product?.Name ?? "No product")</td>
+                    <td>@(review.User?.UserName ?? "No user")</td>
                     <td>@review.Comment</td>
                     <td>@review.Response</td>
                     <td>@review.CreatedAt?.ToString("g")</td>

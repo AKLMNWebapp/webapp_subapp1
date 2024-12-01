@@ -27,7 +27,7 @@
             @foreach (var appUser in Model)
             {
                 <tr>
-                    <td>@appUser.user.Email</td>
+                    <td>@(appUser.user?.Email ?? "N/A")</td>
                     <td>@appUser.Role</td>
                 </tr>
             }

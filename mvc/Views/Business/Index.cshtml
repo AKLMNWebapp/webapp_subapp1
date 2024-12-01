@@ -1,10 +1,10 @@
 @model mvc.DAL.ViewModels.BusinessProductViewModel
 @{
-    ViewData["Title"] = "Product list";
+    ViewData["Title"] = "Product List";
 }
 
 <div class="text-center mb-4">
-    <h1>@Model.User.Email</h1>
+    <h1>@(Model.User?.Email ?? "No user information available")</h1>
     <p class="text-muted">
         Welcome to the Business Dashboard, your central hub for managing and optimizing your business operations. 
         This dashboard is designed to provide you with a comprehensive overview of your business services.

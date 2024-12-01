@@ -95,28 +95,33 @@ public class AllergyController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateNewAllergyUpdate(UpdateProductViewModel updateProductViewModel)
     {
-
         if (ModelState.IsValid)
         {
-            bool allergyCreated = await _allergyRepository.Create(updateProductViewModel.Allergy);
-            if (allergyCreated)
+            if (updateProductViewModel.Allergy != null)
             {
-                var allergies = await _allergyRepository.GetAll(); // gets list of all available allergies
-
-                // Our viewModel here is used to list all allergies in our select menu on the view
-                /*var productViewModel = new CreateProductViewModel
+                bool allergyCreated = await _allergyRepository.Create(updateProductViewModel.Allergy);
+                if (allergyCreated)
                 {
-                    Product = new Product(),
-                    AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
+                    var allergies = await _allergyRepository.GetAll(); // gets list of all available allergies
+
+                    // Our viewModel here is used to list all allergies in our select menu on the view
+                    /*var productViewModel = new CreateProductViewModel
                     {
-                        Value = allergy.AllergyCode.ToString(),
-                        Text = allergy.Name
-                    }).ToList(),
-                };*/
-
-                return RedirectToAction("Update", "Product", new {id = updateProductViewModel.Product.ProductId});
+                        Product = new Product(),
+                        AllergyMultiSelectList = allergies.Select(allergy => new SelectListItem
+                        {
+                            Value = allergy.AllergyCode.ToString(),
+                            Text = allergy.Name
+                        }).ToList(),
+                    };*/
+                    return RedirectToAction("Update", "Product", new {id = updateProductViewModel.Product.ProductId});
+                }
             }
-
+            else
+            {
+               _logger.LogError("[AllergyController] Allergy is null for updateProductViewModel {@updateProductViewModel}", updateProductViewModel);
+                return BadRequest("Allergy data is missing"); 
+            }
         }
         _logger.LogError("[AllergyController] category creation failed {@allergy}", updateProductViewModel.Allergy);
         return BadRequest("Allergy creation failed");
