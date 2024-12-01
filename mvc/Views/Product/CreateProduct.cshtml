@@ -14,7 +14,7 @@
 
     <div class="form-group">
         <label>Didn't find allergy?</label>
-        <a asp-controller="Allergy" asp-action="CreateNewAllergy" class="btn btn-secondary">Back to products view</a>
+        <a asp-controller="Allergy" asp-action="CreateNewAllergy" class="btn btn-success mt-2">Add new allergy</a>
     </div>
     <div class="form-group">
         <label asp-for="Product.Name" class="control-label"></label>
@@ -59,8 +59,11 @@
 
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to products view</a>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to products view</a>
+    </div>
 </form>
 
 @section Scripts {

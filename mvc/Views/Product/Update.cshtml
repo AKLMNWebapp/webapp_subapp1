@@ -16,9 +16,9 @@
         <span asp-validation-for="SelectedAllergyCodes" class="text-danger"></span>    
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-4">
         <label>Didn't find allergy?</label>
-        <a asp-controller="Allergy" asp-action="CreateNewAllergyUpdate" asp-route-id="@Model.Product.ProductId" class="btn btn-secondary">Create new allergy</a>
+        <a asp-controller="Allergy" asp-action="CreateNewAllergyUpdate" asp-route-id="@Model.Product.ProductId" class="btn btn-success">Add new allergy</a>
     </div>
     <div class="form-group">
         <label asp-for="Product.Name" class="control-label"></label>
@@ -63,8 +63,10 @@
 
     </div>
 
-    <button type="submit" class="btn btn-primary">Update</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to product view</a>
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to product view</a>
+    </div>
 </form>
 
 @section Scripts {
