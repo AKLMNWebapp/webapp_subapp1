@@ -1,0 +1,17 @@
+@model mvc.DAL.ViewModels.ListUsersViewModel
+
+<h2>Confirm Deletion</h2>
+
+<p>Are you sure you want to delete the following user?</p>
+
+<div>
+    <p><strong>Email:</strong> @Model.user?.Email</p>
+    <p><strong>Role:</strong> @Model.Role</p>
+    <p><strong>ID:</strong> @Model.user?.Id</p>
+</div>
+
+<form asp-action="DeleteConfirmation" method="post">
+    <input type="hidden" name="id" value="@Model.user?.Id" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a asp-action="ListUsers" class="btn btn-secondary">Cancel</a>
+</form>

@@ -52,6 +52,43 @@ public class AdminController : Controller
         return View(productViewModel);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            _logger.LogError("[AdminController] user not found while executing FindByIdAsync()");
+            return NotFound("User not found");
+        }
+        return View(new ListUsersViewModel
+        {
+            user = user,
+            Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteConfirmation(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if(user == null)
+        {
+            _logger.LogError("[AdminController] user not found while executing FindByIdAsync()");
+            return NotFound ("User not found");
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            _logger.LogError("[AdminController] Failed to delete user with ID {UserId:0000}]", id);
+            return StatusCode(500, "An error occurred while deleting the user.");
+        }
+
+        _logger.LogInformation("[AdminController] User with ID {UserId:0000} was successfully deleted.",id);
+        return RedirectToAction(nameof(ListUsers)); // Redirect back to the user list
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> ListUsers()

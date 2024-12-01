@@ -17,8 +17,7 @@
             <tr>
                 <th>User mail</th>
                 <th>Role</th>
-                <th></th>
-                <th></th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -27,8 +26,9 @@
             @foreach (var appUser in Model)
             {
                 <tr>
-                    <td>@(appUser.user?.Email ?? "N/A")</td>
+                    <td>@appUser.user?.Email</td>
                     <td>@appUser.Role</td>
+                    <td><a asp-action="Delete" asp-route-id="@appUser.user?.Id" class="btn btn-danger">Delete</a></td>
                 </tr>
             }
         }
