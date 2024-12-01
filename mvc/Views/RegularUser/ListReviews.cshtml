@@ -22,6 +22,7 @@
                 <th>Response</th>
                 <th>Created At</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@
                     <td>@review.Response</td>
                     <td>@review.CreatedAt?.ToString("g")</td>
                     <td><a href="@Url.Action("Delete","Review", new {id = review.ReviewId})" class="btn btn-danger">Delete review</a></td>
+                    <td><a href=" @Url.Action("Update","Review", new {id = review.ReviewId})" class="btn btn-primary">Update review</a></td>
                 </tr>
             }
         </tbody>

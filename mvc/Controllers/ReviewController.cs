@@ -145,7 +145,7 @@ public class ReviewController : Controller
             {
                 int productId = review.ProductId;
                 _logger.LogInformation("[ReviewController] Successfully updated review with ReviewId {ReviewId}", review.ReviewId);
-                return RedirectToAction("Details", "Product", new {id = productId});
+                return RedirectToAction("ListReviews", "Review", new {id = productId});
             }
             else
             {
