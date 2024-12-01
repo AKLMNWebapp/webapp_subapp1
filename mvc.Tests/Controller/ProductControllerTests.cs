@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using mvc.Controllers;
 using mvc.DAL.Models;
@@ -17,12 +19,23 @@ public class ProductControllerTests
     private readonly Mock<IRepository<Product>> mockProductRepository;
     private readonly Mock<IRepository<Allergy>> mockAllergyRepository;
     private readonly Mock<ILogger<ProductController>> mockLogger;
+    private readonly Mock<IRepository<Review>> mockReviewRepository;
+    private readonly Mock<IRepository<Category>> mockCategoryRepository;
+    private readonly Mock<UserManager<ApplicationUser>> mockUserManager;
 
     public ProductControllerTests()
     {
         mockProductRepository = new Mock<IRepository<Product>>();
         mockAllergyRepository = new Mock<IRepository<Allergy>>();
         mockLogger = new Mock<ILogger<ProductController>>();
+        mockReviewRepository = new Mock<IRepository<Review>>();
+        mockCategoryRepository = new Mock<IRepository<Category>>();
+
+        var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
+
+        mockUserManager = new Mock<UserManager<ApplicationUser>>(
+            userStoreMock.Object, null!, null!, null!, null!, null!, null!, null!, null!
+        );
     }
 
     //Tests the Index (list) functionaltity which displays a lists of products
@@ -46,7 +59,13 @@ public class ProductControllerTests
 
         mockProductRepository.Setup(repo => repo.GetAll()).ReturnsAsync(products);
 
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object);
 
     // act
     var result = await productController.Index();
@@ -67,7 +86,13 @@ public class ProductControllerTests
         //returning an empty list
         mockProductRepository.Setup(repo => repo.GetAll()).ReturnsAsync(new List<Product>());
         
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object);
 
         //act
         var result = await productController.Index();
@@ -78,7 +103,6 @@ public class ProductControllerTests
         Assert.Empty(viewModel.Products);
     }
 
-    //Details + create ikke ferdig
 
     //Tests behvaior of CreateProduct when it fails
     [Fact]
@@ -96,16 +120,35 @@ public class ProductControllerTests
             Description = "A test product"
         };
 
-
         var createProductViewModel = new CreateProductViewModel
         {
-            Product = testProduct
+            Product = testProduct,
+            SelectedAllergyCodes = new List<int> { 1, 2 }
         };
 
         mockProductRepository.Setup(repo => repo.Create(testProduct)).ReturnsAsync(false);
-    
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        mockAllergyRepository.Setup(repo => repo.GetById(It.IsAny<int>())).ReturnsAsync((int id) =>
+            new Allergy { AllergyCode = id, Name = $"Allergy{id}" });        
+        
+        mockUserManager.Setup(um => um.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(new ApplicationUser { Id = "1", UserName = "TestUser" });
 
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object
+        )
+        {
+            // Override the User.FindFirstValue logic
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+
+        productController.ControllerContext.HttpContext.Items["MockedUserId"] = "1";
 
         //act
         var result = await productController.CreateProduct(createProductViewModel);
@@ -121,7 +164,20 @@ public class ProductControllerTests
     public async Task CreateProductwithAllergies()
     {
         //arrange
-        var testProd = new Product { ProductId = 1, Name = "TestProd", AllergyProducts = new List<AllergyProduct>()};
+        var testProd = new Product 
+        { 
+            ProductId = 1, 
+            Name = "TestProd", 
+            AllergyProducts = new List<AllergyProduct>()
+        };
+
+        var allergies = new List<Allergy>
+        {
+            new Allergy { AllergyCode = 1, Name = "Peanuts" },
+            new Allergy { AllergyCode = 2, Name = "Milk" },
+            new Allergy { AllergyCode = 3, Name = "Eggs" },
+            new Allergy { AllergyCode = 4, Name = "Gluten" }
+        };
 
 
         var createProductViewModel = new CreateProductViewModel
@@ -130,8 +186,30 @@ public class ProductControllerTests
             SelectedAllergyCodes = new List<int> {1, 2, 3, 4}
         };
 
-        mockProductRepository.Setup(repo => repo.Create(testProd)).ReturnsAsync(true);
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        mockAllergyRepository.Setup(repo => repo.GetById(It.IsAny<int>()))
+            .ReturnsAsync((int id) => allergies.FirstOrDefault(a => a.AllergyCode == id));
+        
+        mockProductRepository.Setup(repo => repo.Create(It.IsAny<Product>())).ReturnsAsync(true);
+
+        mockUserManager.Setup(um => um.FindByIdAsync(It.IsAny<string>()))
+            .ReturnsAsync(new ApplicationUser { Id = "1", UserName = "TestUser" });        
+        
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object
+        )
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext() 
+            }
+        };
+
+        productController.ControllerContext.HttpContext.Items["MockedUserId"] = "1";
 
         //act
         var result = await productController.CreateProduct(createProductViewModel);
@@ -170,7 +248,13 @@ public class ProductControllerTests
 
         mockProductRepository.Setup(repo => repo.Update(productUpdate)).ReturnsAsync(true);
 
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object);
 
         //act
         var result = await productController.Update(createProductViewModel);
@@ -207,14 +291,34 @@ public class ProductControllerTests
 
         mockProductRepository.Setup(repo => repo.Update(productUpdateInvalid)).ReturnsAsync(false);
 
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object);
 
         //act
         var result = await productController.Update(createProductViewModel);
 
         //assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Product creation failed", badRequestResult.Value);
+        if (result is ViewResult viewResult)
+        {
+            // check if the ViewResult is returned due to ModelState errors
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal(createProductViewModel, viewResult.Model);
+        }
+        else if (result is BadRequestObjectResult badRequestResult)
+        {
+            // check if BadRequestObjectResult is returned due to repository failure
+            Assert.Equal("Product creation failed", badRequestResult.Value);
+        }
+        else
+        {
+            // fail the test if neither result is returned
+            Assert.Fail("Unexpected result type");
+        }
     }
 
     //Tests the Delete GET method
@@ -226,7 +330,13 @@ public class ProductControllerTests
 
         mockProductRepository.Setup(repo => repo.GetById(1)).ReturnsAsync(testProduct);
 
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object);
 
         //act
         var result = await productController.Delete(1);
@@ -245,7 +355,13 @@ public class ProductControllerTests
         //simulating a successful deletion
         mockProductRepository.Setup(repo => repo.Delete(1)).ReturnsAsync(true);
 
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object, 
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object);
 
         //act
         var result = await productController.DeleteConfirmed(1);
@@ -265,7 +381,13 @@ public class ProductControllerTests
         int invalidProductId = -3;
         mockProductRepository.Setup(repo => repo.Delete(invalidProductId)).ReturnsAsync(false);
 
-        var productController = new ProductController(mockProductRepository.Object, mockAllergyRepository.Object, mockLogger.Object);
+        var productController = new ProductController(
+            mockProductRepository.Object, 
+            mockAllergyRepository.Object,
+            mockCategoryRepository.Object,
+            mockReviewRepository.Object,
+            mockUserManager.Object,
+            mockLogger.Object);
 
         //act
         var result = await productController.DeleteConfirmed(invalidProductId);

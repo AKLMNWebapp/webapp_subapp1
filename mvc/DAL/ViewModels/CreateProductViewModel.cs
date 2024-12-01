@@ -10,5 +10,7 @@ public class CreateProductViewModel
     public List<SelectListItem> CategorySelectList {get; set;} = new List<SelectListItem>();
     public List<SelectListItem> AllergyMultiSelectList {get; set;} = new List<SelectListItem>();
     public List<int> SelectedAllergyCodes {get; set;} = new List<int>();
+    public string NewAllergyName { get; set; } = string.Empty;// Add this property
+
 
 }
