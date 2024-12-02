@@ -8,7 +8,7 @@
 
 <form asp-action="Respond" method="post">
     <div class="form-group">
-        <label asp-for="Response" class="control-label"></label>
+        <label asp-for="Response" class="control-label"></label><span class="text-danger">*</span>
         <input asp-for="Response" class="form-control" />
         <span asp-validation-for="Response" class="text-danger"></span>
     </div>
@@ -16,12 +16,12 @@
         <input type="hidden" asp-for="ReviewId"/>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
     </div>
 </form>
 
 <div>
-    <a asp-controller="Business" asp-action="ListReviews" asp-route-id="@Model.ProductId">Back to Reviews</a>
+    <a asp-controller="Review" asp-action="ListReviews" asp-route-id="@Model.ProductId">Back to Reviews</a>
 </div>
 
 @section Scripts {
