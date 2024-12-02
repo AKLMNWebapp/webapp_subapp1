@@ -37,7 +37,7 @@ public class ReviewRepository : IRepository<Review>
         }
         catch (Exception e)
         {
-            _logger.LogError("[ReviewRepository] ToListAsync() failed when GetAllByProductId() for productId: {productId}, error message: {e}", e.Message);
+            _logger.LogError("[ReviewRepository] ToListAsync() failed when GetAllByProductId() for productId: {productId}, error message: {e}",productId, e.Message);
             return new List<Review>();
         }
     }
@@ -52,7 +52,7 @@ public class ReviewRepository : IRepository<Review>
         }
         catch (Exception e)
         {
-            _logger.LogError("[ReviewRepository] ToListAsync() failed when GetAllByUserId() for UserId: {userId}, error message: {e}", e.Message);
+            _logger.LogError("[ReviewRepository] ToListAsync() failed when GetAllByUserId() for UserId: {userId}, error message: {e}",userId, e.Message);
             return new List<Review>();
         }
     }
@@ -65,7 +65,7 @@ public class ReviewRepository : IRepository<Review>
         }
         catch (Exception e)
         {
-            _logger.LogError("[ReviewRepository] GetById() failed, error message: {e}", e.Message);
+            _logger.LogError("[ReviewRepository] GetById() for id reviewId {reviewId} failed, error message: {e}",id, e.Message);
             return null;
         }
     }

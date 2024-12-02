@@ -37,7 +37,7 @@ public class ProductRepository : IRepository<Product>
         }
         catch (Exception e)
         {
-            _logger.LogError("[ProductRepository] ToListAsync() failed when GetAllByUserId() for UserId: {userId}, error message: {e}", e.Message);
+            _logger.LogError("[ProductRepository] ToListAsync() failed when GetAllByUserId() for UserId: {userId}, error message: {e}",userId, e.Message);
             return new List<Product>();
         }
     }
