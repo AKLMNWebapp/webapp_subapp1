@@ -24,7 +24,7 @@ public class Product
         public double Protein { get; set; }
 
     [StringLength(500)]
-    public string? Description { get; set; } //kan disable nullable i .csproj hvis vi ønsker 
+    public string? Description { get; set; } 
     public string? ImageUrl { get; set; }
 
     [ForeignKey("User")]

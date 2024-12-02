@@ -8,7 +8,7 @@
 
 <form asp-action="CreateReview" method="post">
     <div class="form-group">
-        <label asp-for="Comment" class="control-label"></label>
+        <label asp-for="Comment" class="control-label"></label><span class="text-danger">*</span>
         <input asp-for="Comment" class="form-control" />
         <span asp-validation-for="Comment" class="text-danger"></span>
     </div>

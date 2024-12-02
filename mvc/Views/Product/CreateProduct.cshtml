@@ -17,27 +17,27 @@
         <a asp-controller="Allergy" asp-action="CreateNewAllergy" class="btn btn-success mt-2">Add new allergy</a>
     </div>
     <div class="form-group">
-        <label asp-for="Product.Name" class="control-label"></label>
+        <label asp-for="Product.Name" class="control-label"></label><span class="text-danger">*</span>
         <input asp-for="Product.Name" class="form-control" />
         <span asp-validation-for="Product.Name" class="text-danger"></span>
     </div>
         <div class="form-group">
-        <label asp-for="Product.Energy" class="control-label"></label>
+        <label asp-for="Product.Energy" class="control-label"></label><span class="text-danger">*</span>
         <input asp-for="Product.Energy" class="form-control" />
         <span asp-validation-for="Product.Energy" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.Fat" class="control-label"></label>
+        <label asp-for="Product.Fat" class="control-label"></label><span class="text-danger">*</span>
         <input asp-for="Product.Fat" class="form-control" />
         <span asp-validation-for="Product.Fat" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.Carbohydrates" class="control-label"></label>
+        <label asp-for="Product.Carbohydrates" class="control-label"></label><span class="text-danger">*</span>
         <input asp-for="Product.Carbohydrates" class="form-control" />
         <span asp-validation-for="Product.Carbohydrates" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.Protein" class="control-label"></label>
+        <label asp-for="Product.Protein" class="control-label"></label><span class="text-danger">*</span>
         <input asp-for="Product.Protein" class="form-control" />
         <span asp-validation-for="Product.Protein" class="text-danger"></span>
     </div>
