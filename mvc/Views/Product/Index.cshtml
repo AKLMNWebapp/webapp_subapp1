@@ -1,0 +1,47 @@
+@model mvc.DAL.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = "Product list";
+}
+
+<h1>Products</h1>
+
+<a asp-controller="Product" asp-action="CreateProduct" class="btn btn-primary">Create Product</a>
+
+<div class="container">
+    <div class="row">
+        @{foreach (var product in Model.Products) {
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">
+                        <h6>Næringsinnhold per 100 gram</h6>
+                        <strong>Energy: </strong>@product.Energy.ToString("0.00 kcal")<br>
+                        <strong>Fat: </strong>@product.Fat.ToString("0.00 g")<br>
+                        <strong>Protein: </strong>@product.Protein.ToString("0.00 g")<br>
+                        <strong>Carbohydrates: </strong>@product.Carbohydrates.ToString("0.00 g")<br>
+                        <strong>Category: </strong>@product.Category.Name<br>
+                        <strong>Allergies: </strong>
+                        @if (product.AllergyProducts != null)
+                        {
+                            <ul>
+                            @foreach (var allergyProduct in product.AllergyProducts)
+                            {
+                                <li>@allergyProduct.Allergy.Name</li>
+                            }
+                            </ul>
+                        }
+                    </p>
+                </div>
+                <a asp-action="Review" asp-route-id="@product.ProductId" class="btn btn-warning">Add a review</a>
+                <a asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-info">Details</a>
+                <a asp-action="Update" asp-route-id="@product.ProductId" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@product.ProductId" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+
+        }}
+    </div>
+</div>

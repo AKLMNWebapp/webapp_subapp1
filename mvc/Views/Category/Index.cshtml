@@ -1,0 +1,25 @@
+@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h2>Categories</h2>
+
+<div class="row">
+    @foreach (var category in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@category.Name</h5>
+                    <a href="@Url.Action("Details", "Category", new {id = category.CategoryId})" class="btn btn-primary">View Products</a>
+                    <a href="@Url.Action("Delete","Category", new {id = category.CategoryId})" class="btn btn-danger">Delete</a>
+                    <a href="@Url.Action("Update","Category", new {id = category.CategoryId})" class="btn btn-success">Update</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a asp-action="CreateCategory" class="btn btn-info">Create new Category</a>
